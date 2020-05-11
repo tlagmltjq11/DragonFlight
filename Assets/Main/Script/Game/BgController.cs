@@ -20,8 +20,4 @@ public class BgController : MonoBehaviour
         m_bgRenderer.material.mainTextureOffset += Vector2.up * m_speed * Time.deltaTime; 
     }
 
-    public void Hello()
-    {
-        Debug.Log("hh");
-    }
 }
