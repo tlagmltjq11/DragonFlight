@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1050449880}
   - component: {fileID: 1050449881}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: eye_angry_left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1533920428}
   - component: {fileID: 1533920429}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: eye_angry_right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -173,7 +173,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6996335022520028677}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Parts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -211,7 +211,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6996335022869043177}
   - component: {fileID: 6996335022869043190}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: wing_left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -293,7 +293,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6996335023433096971}
   - component: {fileID: 6996335023433096968}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: eye_right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -356,7 +356,7 @@ SpriteRenderer:
   m_Sprite: {fileID: -4238436467947972711, guid: e0d70f0bf6c5acf469aac2639173f22e,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 0.0625, y: 0.0875}
@@ -375,7 +375,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6996335023571611764}
   - component: {fileID: 6996335023571611765}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -457,7 +457,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6996335023641674455}
   - component: {fileID: 6996335023641674452}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: wing_right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -542,7 +542,7 @@ GameObject:
   - component: {fileID: 6996335023662963856}
   - component: {fileID: 6996335023662963870}
   - component: {fileID: 6996335023662963857}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Monster
   m_TagString: Monster
   m_Icon: {fileID: 0}
@@ -595,6 +595,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90c37693aebfe5b4dad88b66cab523e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_hp: 0
+  m_isAlive: 0
 --- !u!50 &6996335023662963870
 Rigidbody2D:
   serializedVersion: 4
@@ -652,7 +654,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6996335023987928336}
   - component: {fileID: 6996335023987928337}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: eye_left
   m_TagString: Untagged
   m_Icon: {fileID: 0}

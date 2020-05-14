@@ -6,8 +6,8 @@ public class SfxManager : SingletonMonoBehaviour<SfxManager>
 {
     public enum eSfxType
     {
-        None = -1,
         Hit,
+        Dust,
         Max
     }
 
