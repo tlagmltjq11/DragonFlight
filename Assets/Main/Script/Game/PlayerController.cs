@@ -5,17 +5,20 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     Vector3 m_dir;
-    float m_speed = 4f;
+    float m_speed = 8f;
 
     float m_moveScale;
-    BoxCollider2D m_collider;
+    Collider2D m_collider;
 
     [SerializeField]
     GameObject m_bulletPrefab;
     [SerializeField]
     GameObject m_firePos;
+    GameObject m_sfxMagnetObj;
+    GameObject m_sfxShockWaveObj;
 
     GameObjectPool<ProjectileController> m_bulletPool;
+    Animator m_animator;
 
     void KeyProcess()
     {
@@ -37,17 +40,70 @@ public class PlayerController : MonoBehaviour
         bullet.gameObject.SetActive(true);
     }
 
+    public void SetDie()
+    {
+        CancelInvoke("CreateBullet");
+        gameObject.SetActive(false);
+    }
+
+    void StartFire()
+    {
+        InvokeRepeating("CreateBullet", 0.1f, 0.1f);
+    }
+
+    void StopFire()
+    {
+        CancelInvoke("CreateBullet");
+    }
+
     public void RemoveBullet(ProjectileController bullet)
     {
         bullet.gameObject.SetActive(false);
         m_bulletPool.Set(bullet);
     }
 
+    public void SetShockWave(bool isOn)
+    {
+        m_sfxShockWaveObj.SetActive(isOn);
+    }
+
+    public void SetMagnet(bool isOn)
+    {
+        m_sfxMagnetObj.SetActive(isOn);
+    }
+
+    public void SetInvincible()
+    {
+        //총쏘는것을 멈추게함.
+        StopFire();
+        m_animator.Play("Invincible");
+    }
+
+    public void EndInvincible()
+    {
+        StartFire();
+        m_animator.Play("fly");
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.tag.Equals("Monster"))
+        {
+            if (GameManager.Instance.GetState() != GameManager.eGameState.Invincible)
+            {
+                GameManager.Instance.SetState(GameManager.eGameState.Result);
+            }
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        m_collider = GetComponent<BoxCollider2D>();
-        
+        m_animator = GetComponent<Animator>();
+        m_collider = GetComponent<Collider2D>();
+        //시작한뒤 3초뒤에 0.1초 간격으로 계속 총알을 발사시킴.
+        InvokeRepeating("CreateBullet", 3f, 0.1f);
+
         m_bulletPool = new GameObjectPool<ProjectileController>(20, () => 
         {
             var obj = Instantiate(m_bulletPrefab) as GameObject;
@@ -56,8 +112,10 @@ public class PlayerController : MonoBehaviour
             return bullet; 
         });
 
-        //시작한뒤 3초뒤에 0.1초 간격으로 계속 총알을 발사시킴.
-        InvokeRepeating("CreateBullet", 3f, 0.1f);
+        m_sfxMagnetObj = Util.FindChildObject(gameObject, "Magnet");
+        m_sfxShockWaveObj = Util.FindChildObject(gameObject, "ShockWave");
+        m_sfxMagnetObj.SetActive(false);
+        SetShockWave(false);
     }
 
     // Update is called once per frame
@@ -69,7 +127,7 @@ public class PlayerController : MonoBehaviour
         {
             m_moveScale = m_speed * Time.deltaTime;
             float checkMove = m_moveScale;
-            var amount = m_collider.size.x / 2;
+            var amount = m_collider.bounds.size.x / 2;
 
             if (m_moveScale < amount)
             {

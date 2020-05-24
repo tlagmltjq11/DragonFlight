@@ -22,13 +22,14 @@ public class LoadSceneManager : DonDestroy<LoadSceneManager>
     public enum eSceneState
     {
         None = -1,
+        CI,
         Title,
         Lobby,
         Game
 
     }
 
-    eSceneState m_state = eSceneState.Title;
+    eSceneState m_state = eSceneState.CI;
     eSceneState m_loadState = eSceneState.None;
     string m_progressLabel;
     AsyncOperation m_loadSceneState;

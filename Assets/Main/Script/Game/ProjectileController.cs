@@ -19,8 +19,8 @@ public class ProjectileController : MonoBehaviour
     //이부분 나중에 다시 수정한다하심. 원하는 결과가 안나옴.
     void CheckCollison()
     {
-        var hit = Physics2D.Raycast(transform.position, Vector3.up, (transform.position - m_prevPos).magnitude + m_collider.size.y / 2f, 1 << LayerMask.NameToLayer("Monster"));
-        Debug.DrawRay(transform.position, Vector3.up * ((transform.position - m_prevPos).magnitude + m_collider.size.y / 2f), Color.green);
+        var hit = Physics2D.Raycast(m_prevPos, Vector3.up, (transform.position - m_prevPos).magnitude + m_collider.size.y / 2, 1 << LayerMask.NameToLayer("Monster"));
+        //Debug.DrawRay(transform.position, Vector3.up * ((transform.position - m_prevPos).magnitude + m_collider.size.y / 2f), Color.green);
         if(hit.collider != null)
         {
             if(hit.collider.tag.Equals("Monster"))

@@ -10,8 +10,9 @@ public class MonsterController : MonoBehaviour
     public bool m_isAlive;
     public int LineNum { get; set; }
     Vector3 m_dir = Vector3.down;
-    float m_speed = 2f;
-
+    float m_speed = 4f;
+    float m_speedScale = 0.8f;
+    float m_prevSpeedScale = 0f;
     MonsterManager.eMonsterType m_type;
     SpriteRenderer[] m_sprRenderers;
     Animator m_animator;
@@ -26,17 +27,38 @@ public class MonsterController : MonoBehaviour
         m_player = player;
     }
 
-    public void SetMonster(MonsterManager.eMonsterType type, int line)
+    public void SetMonster(MonsterManager.eMonsterType type, int line, float scale)
     {
         m_type = type;
         m_hp = ((int)m_type + 1) * 2;//타입에 따라서 hp를 다르게 설정함.
         ChangeParts();
         m_isAlive = true;
         LineNum = line;
+        m_speedScale = scale;
+    }
+
+    //원래대로 돌아올 속도를 알고있어야 하기 떄문에 prev 변수를 사용.
+    public void SetSpeedScale(float scale)
+    {
+        m_prevSpeedScale = m_speedScale;
+        m_speedScale = scale;
+
+        if(scale.Equals(1f))
+        {
+            SetDefaultSpeedScale();
+        }
+    }
+
+    public void SetDefaultSpeedScale()
+    {
+        m_speedScale = m_prevSpeedScale;
+        m_prevSpeedScale = 0f;
     }
 
     public void SetDie()
     {
+        ScoreManager.Instance.SetHuntScore(((int)m_type + 1) * 50);
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.MonDie);
         SfxManager.Instance.CreateSfx(SfxManager.eSfxType.Dust, transform.position);
         ItemManager.Instance.CreateItem(transform.position, (m_player.transform.position - transform.position));
     }
@@ -82,6 +104,18 @@ public class MonsterController : MonoBehaviour
         {
             MonsterManager.Instance.RemoveMonster(this);
         }
+        if(collision.tag.Equals("Invincible"))
+        {
+            m_hp = 0;
+            SetDamage(0);
+        }
+        if (collision.tag.Equals("ShockWave"))
+        {
+            //아이템 생성없이 삭제
+            m_hp = 0;
+            m_isAlive = false;
+            MonsterManager.Instance.RemoveMonster(this);
+        }
     }
 
     // Start is called before the first frame update
@@ -95,6 +129,6 @@ public class MonsterController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position += m_dir * m_speed * Time.deltaTime;
+        transform.position += m_dir * m_speed * m_speedScale * Time.deltaTime;
     }
 }

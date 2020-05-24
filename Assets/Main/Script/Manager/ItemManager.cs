@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,6 +22,12 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>
     [SerializeField]
     GameObject m_itemPrefab;
     GameObjectPool<GameItem> m_gameItemPool;
+    List<GameItem> m_itemList = new List<GameItem>();
+
+    [SerializeField]
+    PlayerController m_player;
+
+    int[] m_itemTable = new int[(int)eItemType.Max] {85, 3, 2, 1, 4, 5}; //각 아이템들의 생성확률을 100을 기준으로 정해줌 
 
     public Sprite GetItemSprite(eItemType type)
     {
@@ -30,16 +37,23 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>
 
     public void CreateItem(Vector3 pos, Vector3 dir)
     {
-        var type = (eItemType)Random.Range((int)eItemType.Coin, (int)eItemType.Max);
+        int type = 0;
+        do
+        {
+            type = Util.GetPriorities(m_itemTable);//(eItemType)Random.Range((int)eItemType.Coin, (int)eItemType.Max);       
+
+        } while (GameManager.Instance.GetState() == GameManager.eGameState.Invincible && (eItemType)type == eItemType.Invincible);
 
         var item = m_gameItemPool.Get();
-        item.SetItem(type, pos, dir);
+        item.SetItem((eItemType)type, pos, dir);
+        m_itemList.Add(item);
     }
     
     public void RemoveItem(GameItem item)
     {
         item.gameObject.SetActive(false);
-        m_gameItemPool.Set(item);
+        if(m_itemList.Remove(item))
+            m_gameItemPool.Set(item);
     }
 
     // Start is called before the first frame update
@@ -65,6 +79,13 @@ public class ItemManager : SingletonMonoBehaviour<ItemManager>
     // Update is called once per frame
     void Update()
     {
-        
+        for(int i=0; i<m_itemList.Count; i++)
+        {
+            if(m_itemList[i].IsMagnet)
+            {
+                //플레이어와의 위치를 빼서 방향을 알아내고 노말라이즈한다. 그 후 속도를 곱함.
+                m_itemList[i].transform.position += (m_player.transform.position - m_itemList[i].transform.position).normalized * 10f * Time.deltaTime;
+            }
+        }
     }
 }

@@ -11,10 +11,6 @@ public class MonsterManager : SingletonMonoBehaviour<MonsterManager>
         public Sprite[] m_parts;
     }
 
-    [SerializeField]
-    MonsterPartsSprite[] m_monsterParts;
-
-    PlayerController m_player;
     public enum eMonsterType
     {
         None = -1,
@@ -32,9 +28,34 @@ public class MonsterManager : SingletonMonoBehaviour<MonsterManager>
     //가장왼쪽위 몬스터의 시작좌표
     Vector2 m_startPos = new Vector2(-2.26f, 6f);
     float m_posXGap = 1.12f; //몬스터간 좌표 갭
+    [SerializeField]
+    MonsterPartsSprite[] m_monsterParts;
 
+    PlayerController m_player;
     List<MonsterController> m_monsterList = new List<MonsterController>(); //Active되어있는 몬스터들만 들어있는 리스트
     int m_lineNumber;
+    float m_spawnTimeScale = 1f;
+    float m_spawnInterval = 2.549f;
+
+    public void StopCreateMonsters()
+    {
+        CancelInvoke("CreateMonsters");
+    }
+
+    public void SetSpawnInterval(float scale)
+    {
+        m_spawnTimeScale = scale;
+
+        //이미 생성되어있는 몬스터들의 이동 스케일도 바꿔준다.
+        for (int i = 0; i < m_monsterList.Count; i++)
+        {
+            m_monsterList[i].SetSpeedScale(scale);
+        }
+
+        //기존 리피팅 취소
+        CancelInvoke("CreateMonsters");
+        InvokeRepeating("CreateMonsters", 0f, m_spawnInterval / m_spawnTimeScale);
+    }
 
     public void CreateMonsters()
     {
@@ -54,7 +75,7 @@ public class MonsterManager : SingletonMonoBehaviour<MonsterManager>
             }
 
             var mon = m_monsterPool.Get();
-            mon.SetMonster(type, m_lineNumber);
+            mon.SetMonster(type, m_lineNumber, m_spawnTimeScale);
             mon.transform.position = Vector3.right * (m_startPos.x + i * m_posXGap) + Vector3.up * m_startPos.y;
             mon.gameObject.SetActive(true);
 
@@ -113,7 +134,7 @@ public class MonsterManager : SingletonMonoBehaviour<MonsterManager>
             return mon;
         });
 
-        InvokeRepeating("CreateMonsters", 3f, 2f);
+        InvokeRepeating("CreateMonsters", 3f, m_spawnInterval / m_spawnTimeScale);
     }
 
     // Update is called once per frame
