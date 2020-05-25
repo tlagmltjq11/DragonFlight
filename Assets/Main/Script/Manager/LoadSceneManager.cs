@@ -35,6 +35,16 @@ public class LoadSceneManager : DonDestroy<LoadSceneManager>
     AsyncOperation m_loadSceneState;
     SpriteRenderer m_loadingBgSpr;
 
+    public void SetState(eSceneState state)
+    {
+        m_state = state;
+    }
+
+    public eSceneState GetState()
+    {
+        return m_state;
+    }
+
     public void LoadSceneAsync(eSceneState state)
     {
         //load를 하고 있다면
@@ -47,11 +57,12 @@ public class LoadSceneManager : DonDestroy<LoadSceneManager>
         m_loadSceneState = SceneManager.LoadSceneAsync(state.ToString());
     }
 
-
+    /*
     private void OnGUI()
     {
         GUI.Label(new Rect(Screen.width / 2, Screen.height / 2 + 50, 150, 50), m_progressLabel);
     }
+    */
 
     protected override void OnAwake()
     {
@@ -101,6 +112,9 @@ public class LoadSceneManager : DonDestroy<LoadSceneManager>
 
                 m_state = m_loadState;
                 m_loadState = eSceneState.None;
+                m_progressLabel = "100";
+
+
             }
             else
             {

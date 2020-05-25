@@ -5,6 +5,15 @@ using UnityEngine;
 
 public class Util : MonoBehaviour
 {
+    public static EventDelegate.Parameter MakeParameter(UnityEngine.Object _value, System.Type _type)
+    {
+        EventDelegate.Parameter param = new EventDelegate.Parameter();
+        param.obj = _value;
+        param.expectedType = _type;
+
+        return param;
+    }
+
     public static GameObject FindChildObject(GameObject gObj, string name)
     {
         //파라메터로 true로 주는것은 액티브가 꺼져있는 자식들도 찾겠다는것임.
