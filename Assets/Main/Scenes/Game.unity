@@ -1863,7 +1863,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
   m_Constraints: 0
 --- !u!114 &640203232
 MonoBehaviour:
@@ -1880,6 +1880,10 @@ MonoBehaviour:
   m_bulletPrefab: {fileID: 4483215151411256728, guid: b161a9d2b495d294c9218c2e7b23935b,
     type: 3}
   m_firePos: {fileID: 1463476390}
+  m_partsRenderer:
+  - {fileID: 2108608216}
+  - {fileID: 805529458}
+  - {fileID: 2084671637}
 --- !u!1 &718729250
 GameObject:
   m_ObjectHideFlags: 0
@@ -2814,6 +2818,7 @@ GameObject:
   - component: {fileID: 1009920833}
   - component: {fileID: 1009920834}
   - component: {fileID: 1009920835}
+  - component: {fileID: 1009920836}
   m_Layer: 0
   m_Name: Invincible
   m_TagString: Invincible
@@ -2880,6 +2885,27 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2.046466, y: 1.8889818}
   m_EdgeRadius: 0
+--- !u!50 &1009920836
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1009920832}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &1023986321
 GameObject:
   m_ObjectHideFlags: 0
@@ -3638,6 +3664,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_popupOkCancelPrefab: {fileID: 0}
   m_popupOkPrefab: {fileID: 0}
+  m_popupOptionPrefab: {fileID: 0}
 --- !u!4 &1281345665
 Transform:
   m_ObjectHideFlags: 0

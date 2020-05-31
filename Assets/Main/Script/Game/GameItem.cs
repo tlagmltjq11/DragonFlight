@@ -24,6 +24,7 @@ public class GameItem : MonoBehaviour
 
         //dir 방향대로 위로 힘을 가해줌.
         m_rigid.AddForce(Vector2.up * 2f + (Vector2)dir.normalized, ForceMode2D.Impulse);
+        IsMagnet = false;
 
         if(type >= ItemManager.eItemType.Gem_Red && type <= ItemManager.eItemType.Gem_Blue)
         {
@@ -80,6 +81,7 @@ public class GameItem : MonoBehaviour
         {
             IsMagnet = false;
         }
+
     }
 
     // Start is called before the first frame update

@@ -71,6 +71,7 @@ public class LoadSceneManager : DonDestroy<LoadSceneManager>
 
     protected override void OnStart()
     {
+        m_loadingBgSpr = GetComponentInChildren<SpriteRenderer>();
         //제일 먼저 찾게된 자식의 스프라이트 렌더러를 반환해준다.
         //m_loadingBgSpr = GetComponentInChildren<SpriteRenderer>();
         //m_loadingBgSpr.enabled = false;
@@ -138,8 +139,6 @@ public class LoadSceneManager : DonDestroy<LoadSceneManager>
 #else
                                 Application.Quit();
 #endif
-                                LoadSceneAsync(eSceneState.Title);
-                                PopupManager.Instance.ClosePopup();
                             }, null, "예", "아니오");
                             break;
                         case eSceneState.Lobby:

@@ -9,6 +9,9 @@ public class PopupManager : DonDestroy<PopupManager>
     GameObject m_popupOkCancelPrefab; //동적로드 방식을 사용할 것임.
     [SerializeField]
     GameObject m_popupOkPrefab;
+    [SerializeField]
+    GameObject m_popupOptionPrefab;
+
     int m_popupDepth = 1000;
     int m_depthGap = 10;
 
@@ -67,6 +70,30 @@ public class PopupManager : DonDestroy<PopupManager>
         m_popupList.Add(obj);
     }
 
+    public void OpenPopupOption(PopupButtonDelegate okBtnDel)
+    {
+        var obj = Instantiate(m_popupOptionPrefab) as GameObject;
+
+        //위에서부터 순서대로 찾아오기 때문에 가장먼저 온 패널이 가장 상위 패널임.
+        var panels = obj.GetComponentsInChildren<UIPanel>();
+
+        for (int i = 0; i < panels.Length; i++)
+        {
+            //시작점을 현재 팝업의 갯수 * 갭을 해주며 + i 를 해주면서 내부 패널들의 뎁스를 1씩 늘려 맞춰준다.
+            panels[i].depth = m_popupDepth + (m_popupList.Count * m_depthGap + i);
+        }
+
+        //모든 팝업들을 팝업매니저의 자식으로 만들어 관리할것임.
+        obj.transform.SetParent(transform);
+
+        //초기화
+        obj.transform.localPosition = Vector3.zero;
+
+        var popup = obj.GetComponent<PopupOption>();
+        popup.SetPopup(okBtnDel);
+        m_popupList.Add(obj);
+    }
+
     public void ClosePopup()
     {
         if(m_popupList.Count > 0)
@@ -94,6 +121,7 @@ public class PopupManager : DonDestroy<PopupManager>
     {
         m_popupOkCancelPrefab = Resources.Load("Popup/PopupOkCancel") as GameObject;
         m_popupOkPrefab = Resources.Load("Popup/PopupOk") as GameObject;
+        m_popupOptionPrefab = Resources.Load("Popup/PopupOption") as GameObject;
         base.OnStart();
     }
 

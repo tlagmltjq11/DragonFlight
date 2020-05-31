@@ -245,7 +245,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 206964742}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.30200595, y: 1.4154763, z: 0.10771014}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -345,7 +345,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 465629152}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.30200595, y: 1.4154763, z: 0.10771014}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -954,6 +954,57 @@ MonoBehaviour:
   callWhenFinished: 
   from: 1
   to: 0
+--- !u!1 &895603100
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 895603102}
+  - component: {fileID: 895603101}
+  m_Layer: 0
+  m_Name: SoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &895603101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 895603100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d887bd4f2c847d41967240217710e39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_sfxClip:
+  - {fileID: 8300000, guid: d14750c4ee97c9443a98c35ac9985e30, type: 3}
+  - {fileID: 8300000, guid: 26c6f416d536ec348a4a9633b9bd8c85, type: 3}
+  - {fileID: 8300000, guid: 1756c1e775af9f24a9b444aa241a839a, type: 3}
+  - {fileID: 8300000, guid: 616a2abbed85e7a4699804c6e1561ecd, type: 3}
+  - {fileID: 8300000, guid: 8bbcc461c56dc4741802f2dfb32e62cf, type: 3}
+  m_bgmClip:
+  - {fileID: 8300000, guid: b6a0f5b36b84b0b4199ce8445b331d29, type: 3}
+--- !u!4 &895603102
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 895603100}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &963585977
 GameObject:
   m_ObjectHideFlags: 0
@@ -1026,7 +1077,7 @@ MonoBehaviour:
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 9a4d9e44a9161554abcb5f1e6c088a81, type: 3}
   mFont: {fileID: 0}
-  mText: COPYRIGHT(C) 2020 SBS GAME ACADEMY ALL RIGHTS RESERVED
+  mText: COPYRIGHT(C). 2020 SBS GAME ACADEMY ALL RIGHTS RESERVED
   mFontSize: 50
   mFontStyle: 1
   mAlignment: 0
@@ -1193,6 +1244,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_popupOkCancelPrefab: {fileID: 0}
   m_popupOkPrefab: {fileID: 0}
+  m_popupOptionPrefab: {fileID: 0}
 --- !u!4 &1310111418
 Transform:
   m_ObjectHideFlags: 0

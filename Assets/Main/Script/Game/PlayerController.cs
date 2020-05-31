@@ -14,11 +14,16 @@ public class PlayerController : MonoBehaviour
     GameObject m_bulletPrefab;
     [SerializeField]
     GameObject m_firePos;
+    [SerializeField]
+    SpriteRenderer[] m_partsRenderer;
+
     GameObject m_sfxMagnetObj;
     GameObject m_sfxShockWaveObj;
 
     GameObjectPool<ProjectileController> m_bulletPool;
     Animator m_animator;
+    bool m_isDrag;
+    Vector3 m_startPos;
 
     void KeyProcess()
     {
@@ -38,6 +43,13 @@ public class PlayerController : MonoBehaviour
         bullet.transform.position = m_firePos.transform.position;
         //꺼져있는 Active를 켜주면 날아가게된다.
         bullet.gameObject.SetActive(true);
+    }
+
+    void LoadCharacterSprite()
+    {
+        var sprites = Resources.LoadAll<Sprite>(string.Format("Heroes/sunny_{0:00}", PlayerDataManager.Instance.GetCurHero()));
+        m_partsRenderer[0].sprite = sprites[0];
+        m_partsRenderer[1].sprite = m_partsRenderer[2].sprite = sprites[1];
     }
 
     public void SetDie()
@@ -116,39 +128,66 @@ public class PlayerController : MonoBehaviour
         m_sfxShockWaveObj = Util.FindChildObject(gameObject, "ShockWave");
         m_sfxMagnetObj.SetActive(false);
         SetShockWave(false);
+
+        LoadCharacterSprite();
     }
+
 
     // Update is called once per frame
     void Update()
     {
-        KeyProcess();
-
-        if(m_dir != Vector3.zero)
+        if (Input.GetMouseButtonDown(0))
         {
-            m_moveScale = m_speed * Time.deltaTime;
-            float checkMove = m_moveScale;
-            var amount = m_collider.bounds.size.x / 2;
-
-            if (m_moveScale < amount)
-            {
-                checkMove = amount;
-            }
-
-            //어느 위치에서, 어느 방향으로, 얼마만큼 레이를 쏘겠느냐.
-            var hitInfo = Physics2D.Raycast(transform.position, m_dir, checkMove, 1 << LayerMask.NameToLayer("Collider"));
-
-            //충돌했다면
-            if (hitInfo.collider != null)
-            {
-                checkMove = hitInfo.distance - amount;
-            }
-            else
-            {
-                checkMove = m_moveScale;
-            }
-
-            transform.position += m_dir * checkMove;
+            m_isDrag = true;
+            m_startPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         }
 
+        if (Input.GetMouseButtonUp(0))
+        {
+            m_isDrag = false;
+        }
+
+        if (m_isDrag == true)
+        {
+            //바로 마우스가 어디로갔는지 체크한다.
+            var movePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            var dir = movePos - m_startPos;
+
+
+            //KeyProcess();
+
+            m_dir = new Vector3(dir.x, 0, 0).normalized;
+
+            if (m_dir != Vector3.zero)
+            {
+                //m_moveScale = m_speed * Time.deltaTime;
+                m_moveScale = Mathf.Abs(dir.x);
+                float checkMove = m_moveScale;
+                var amount = m_collider.bounds.size.x / 2;
+
+                if (m_moveScale < amount)
+                {
+                    checkMove = amount;
+                }
+
+                //어느 위치에서, 어느 방향으로, 얼마만큼 레이를 쏘겠느냐.
+                var hitInfo = Physics2D.Raycast(transform.position, m_dir, checkMove, 1 << LayerMask.NameToLayer("Collider"));
+
+                //충돌했다면
+                if (hitInfo.collider != null)
+                {
+                    checkMove = hitInfo.distance - amount;
+                }
+                else
+                {
+                    checkMove = m_moveScale;
+                }
+
+                transform.position += m_dir * checkMove;
+            }
+
+            m_startPos = movePos;
+
+        }
     }
 }

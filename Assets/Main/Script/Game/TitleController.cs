@@ -41,6 +41,42 @@ public class TitleController : MonoBehaviour
     {
         m_bgObj.SetActive(false);
         m_titleObj.SetActive(false);
+
+        if (PlayerPrefs.HasKey("OPTION_BGM"))
+        {
+            if (PlayerPrefs.GetInt("OPTION_BGM") == 1)
+            {
+                SoundManager.Instance.MuteBGM(false);
+                SoundManager.Instance.PlayBGM();
+            }
+            else if (PlayerPrefs.GetInt("OPTION_BGM") == 0)
+            {
+                SoundManager.Instance.MuteBGM(true);
+            }
+        }
+        else
+        {
+            SoundManager.Instance.MuteBGM(false);
+            SoundManager.Instance.PlayBGM();
+        }
+
+        if (PlayerPrefs.HasKey("OPTION_SFX"))
+        {
+            if (PlayerPrefs.GetInt("OPTION_SFX") == 1)
+            {
+                SoundManager.Instance.MuteSFX(false);
+                //SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.GetItem);
+            }
+            else if (PlayerPrefs.GetInt("OPTION_SFX") == 0)
+            {
+                SoundManager.Instance.MuteSFX(true);
+            }
+        }
+        else
+        {
+            SoundManager.Instance.MuteSFX(false);
+        }
+        
     }
 
     // Update is called once per frame
@@ -49,7 +85,10 @@ public class TitleController : MonoBehaviour
 #if UNITY_STANDALONE
         if(Input.anyKeyDown && !Input.GetKeyDown(KeyCode.Escape) && LoadSceneManager.Instance.GetState() == LoadSceneManager.eSceneState.Title)
         {
-            GoNextScene();
+            if(GameObject.Find("PopupManager").transform.childCount == 0)
+            {
+                GoNextScene();
+            }
         }
 #endif
     }

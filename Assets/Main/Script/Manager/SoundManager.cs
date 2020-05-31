@@ -8,7 +8,7 @@ public class SoundManager : DonDestroy<SoundManager>
     {
         BGM,
         SFX,
-        MAX
+        Max
     }
 
     public enum eAudioSFXClip
@@ -34,7 +34,12 @@ public class SoundManager : DonDestroy<SoundManager>
     AudioClip[] m_bgmClip;
 
     //2개짜리 객체리스트를 생성
-    AudioSource[] m_audio = new AudioSource[(int)eAudioType.MAX];
+    AudioSource[] m_audio = new AudioSource[(int)eAudioType.Max];
+
+    public void MuteBGM(bool isOn)
+    {
+        m_audio[(int)eAudioType.BGM].mute = isOn;
+    }
 
     public void PauseBGM()
     {
@@ -45,6 +50,10 @@ public class SoundManager : DonDestroy<SoundManager>
     {
         if (m_audio[(int)eAudioType.BGM].clip == null) return;
         m_audio[(int)eAudioType.BGM].Play();
+    }
+    public void MuteSFX(bool isOn)
+    {
+        m_audio[(int)eAudioType.SFX].mute = isOn;
     }
 
     public void PlaySfx(eAudioSFXClip clip)

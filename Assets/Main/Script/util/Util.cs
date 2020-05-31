@@ -8,9 +8,11 @@ public class Util : MonoBehaviour
     public static EventDelegate.Parameter MakeParameter(UnityEngine.Object _value, System.Type _type)
     {
         EventDelegate.Parameter param = new EventDelegate.Parameter();
+        // 이벤트 parameter 생성.     
         param.obj = _value;
+        // 이벤트 함수에 전달하고 싶은 값.     
         param.expectedType = _type;
-
+        // 값의 타입.       
         return param;
     }
 
