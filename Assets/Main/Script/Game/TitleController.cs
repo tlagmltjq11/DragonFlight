@@ -42,6 +42,7 @@ public class TitleController : MonoBehaviour
         m_bgObj.SetActive(false);
         m_titleObj.SetActive(false);
 
+        /*
         if (PlayerPrefs.HasKey("OPTION_BGM"))
         {
             if (PlayerPrefs.GetInt("OPTION_BGM") == 1)
@@ -76,6 +77,7 @@ public class TitleController : MonoBehaviour
         {
             SoundManager.Instance.MuteSFX(false);
         }
+        */
         
     }
 

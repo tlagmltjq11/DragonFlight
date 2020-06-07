@@ -84,7 +84,11 @@ public class PopupOption : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        var onBGM = PlayerPrefs.GetInt("OPTION_BGM", 1) == 1 ? false : true;
+        var onSFX = PlayerPrefs.GetInt("OPTION_SFX", 1) == 1 ? false : true;
+
+        m_bgmToggle.value = !onBGM;
+        m_sfxToggle.value = !onSFX;
     }
 
     // Update is called once per frame

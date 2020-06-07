@@ -83,6 +83,9 @@ public class SoundManager : DonDestroy<SoundManager>
         m_audio[(int)eAudioType.SFX].loop = false;
         m_audio[(int)eAudioType.SFX].playOnAwake = false;
         m_audio[(int)eAudioType.SFX].rolloffMode = AudioRolloffMode.Linear;
+
+        MuteBGM(PlayerPrefs.GetInt("OPTION_BGM", 1) == 1 ? false : true);
+        MuteSFX(PlayerPrefs.GetInt("OPTION_SFX", 1) == 1 ? false : true);
     }
     // Update is called once per frame
     void Update()
