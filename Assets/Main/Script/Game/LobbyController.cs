@@ -63,12 +63,15 @@ public class LobbyController : MonoBehaviour
         m_charTween = m_charSpr.GetComponent<TweenPosition>();
         m_menuBtns = m_menuBtnObj.GetComponentsInChildren<UIButton>();
         var results = m_menuObj.GetComponentsInChildren<ILobbyMenu>();
+
         m_menu = new ILobbyMenu[results.Length];
+
         for (int i = 0; i < m_menu.Length; i++)
         {
             m_menu[i] = results[i];
             m_menu[i].CloseUI();
         }
+
         for (int i = 0; i < m_menuBtns.Length; i++)
         {
             EventDelegate del = new EventDelegate(this, "OpenMenu");

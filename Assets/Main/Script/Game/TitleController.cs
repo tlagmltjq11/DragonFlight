@@ -9,11 +9,11 @@ public class TitleController : MonoBehaviour
     [SerializeField]
     GameObject m_titleObj;
     [SerializeField]
-    GameObject m_ciBg;
-    [SerializeField]
     UILabel m_startInfo;
     [SerializeField]
     UIEventTrigger m_eventTrigger;
+    [SerializeField]
+    GameObject m_CI;
 
     public void GoNextScene()
     {
@@ -24,7 +24,7 @@ public class TitleController : MonoBehaviour
     {
         m_bgObj.SetActive(true);
         m_titleObj.SetActive(true);
-        m_ciBg.SetActive(false);
+        m_CI.SetActive(false);
         LoadSceneManager.Instance.SetState(LoadSceneManager.eSceneState.Title);
 
 #if UNITY_ASDROID || UNITY_IOS
@@ -36,56 +36,25 @@ public class TitleController : MonoBehaviour
 #endif
     }
 
+
     // Start is called before the first frame update
     void Start()
     {
         m_bgObj.SetActive(false);
         m_titleObj.SetActive(false);
 
-        /*
-        if (PlayerPrefs.HasKey("OPTION_BGM"))
+        //로비에서 타이틀화면으로 넘어올 시 CI를 재생하지않고 곧바로 SetTitle을 실행하도록 유도한다.
+        if (LoadSceneManager.Instance.GetState() == LoadSceneManager.eSceneState.Lobby)
         {
-            if (PlayerPrefs.GetInt("OPTION_BGM") == 1)
-            {
-                SoundManager.Instance.MuteBGM(false);
-                SoundManager.Instance.PlayBGM();
-            }
-            else if (PlayerPrefs.GetInt("OPTION_BGM") == 0)
-            {
-                SoundManager.Instance.MuteBGM(true);
-            }
+            SetTitle();
         }
-        else
-        {
-            SoundManager.Instance.MuteBGM(false);
-            SoundManager.Instance.PlayBGM();
-        }
-
-        if (PlayerPrefs.HasKey("OPTION_SFX"))
-        {
-            if (PlayerPrefs.GetInt("OPTION_SFX") == 1)
-            {
-                SoundManager.Instance.MuteSFX(false);
-                //SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.GetItem);
-            }
-            else if (PlayerPrefs.GetInt("OPTION_SFX") == 0)
-            {
-                SoundManager.Instance.MuteSFX(true);
-            }
-        }
-        else
-        {
-            SoundManager.Instance.MuteSFX(false);
-        }
-        */
-        
     }
 
     // Update is called once per frame
     void Update()
     {
 #if UNITY_STANDALONE
-        if(Input.anyKeyDown && !Input.GetKeyDown(KeyCode.Escape) && LoadSceneManager.Instance.GetState() == LoadSceneManager.eSceneState.Title)
+        if (Input.anyKeyDown && !Input.GetKeyDown(KeyCode.Escape) && LoadSceneManager.Instance.GetState() == LoadSceneManager.eSceneState.Title)
         {
             if(GameObject.Find("PopupManager").transform.childCount == 0)
             {

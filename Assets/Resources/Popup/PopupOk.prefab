@@ -873,17 +873,17 @@ MonoBehaviour:
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 1
   mWidth: 430
-  mHeight: 24
+  mHeight: 38
   mDepth: 4
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 17.916666
+  aspectRatio: 11.315789
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 9a4d9e44a9161554abcb5f1e6c088a81, type: 3}
   mFont: {fileID: 0}
   mText: body
-  mFontSize: 20
+  mFontSize: 35
   mFontStyle: 0
   mAlignment: 1
   mEncoding: 1
@@ -915,8 +915,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 430, y: 24, z: 0}
-  m_Center: {x: 0, y: -12, z: 0}
+  m_Size: {x: 430, y: 38, z: 0}
+  m_Center: {x: 0, y: -19, z: 0}
 --- !u!114 &210878137310235784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1242,7 +1242,7 @@ Transform:
   m_GameObject: {fileID: 5552787214075946518}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.65, y: 0.7, z: 1}
   m_Children:
   - {fileID: 210878137252633787}
   - {fileID: 210878137293778854}
@@ -1299,7 +1299,7 @@ MonoBehaviour:
   eventReceiver: {fileID: 0}
   callWhenFinished: 
   from: {x: 0, y: 0, z: 0}
-  to: {x: 1, y: 1, z: 1}
+  to: {x: 0.65, y: 0.7, z: 1}
   updateTable: 0
 --- !u!1 &7614648712132980974
 GameObject:

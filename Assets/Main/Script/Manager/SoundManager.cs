@@ -27,7 +27,6 @@ public class SoundManager : DonDestroy<SoundManager>
         Max
     }
 
-    //동적으로 해도 되는데 시간없으니까
     [SerializeField]
     AudioClip[] m_sfxClip;
     [SerializeField]
@@ -58,9 +57,6 @@ public class SoundManager : DonDestroy<SoundManager>
 
     public void PlaySfx(eAudioSFXClip clip)
     {
-        //m_audio[(int)eAudioType.SFX].clip = m_sfxClip[(int)clip];
-        //m_audio[(int)eAudioType.SFX].Play();
-
         m_audio[(int)eAudioType.SFX].PlayOneShot(m_sfxClip[(int)clip]);
     }
 

@@ -15,7 +15,6 @@ public class BgController : MonoBehaviour
         m_speedScale = scale;
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         m_bgRenderer = GetComponent<SpriteRenderer>();

@@ -5,7 +5,8 @@ using UnityEngine;
 public enum eLobbyMenuType
 {
     Character,
-    Inventory
+    Inventory,
+    Shop
 }
 
 public interface ILobbyMenu
