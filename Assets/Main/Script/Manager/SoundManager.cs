@@ -18,6 +18,8 @@ public class SoundManager : DonDestroy<SoundManager>
         GetInvincible,
         GetItem,
         MonDie,
+        NextScene,
+        ButtonClick,
         Max
     }
 

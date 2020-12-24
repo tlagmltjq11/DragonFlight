@@ -10,6 +10,7 @@ TagManager:
   - Magnet
   - Invincible
   - ShockWave
+  - Shop
   layers:
   - Default
   - TransparentFX

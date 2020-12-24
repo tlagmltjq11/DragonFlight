@@ -124,20 +124,4 @@ public class PopupManager : DonDestroy<PopupManager>
         m_popupOptionPrefab = Resources.Load("Popup/PopupOption") as GameObject;
         base.OnStart();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.P))
-        {
-            if(Random.Range(1, 101) % 2 == 0)
-            {
-                OpenPopupOk("[ff0000]Error[-]", "[000000]네트워크 오류가 발생하였습니다.\r\n 잠시후 다시 시도해주세요.", null);
-            }
-            else
-            {
-                OpenPopupOkCancel("[000000]Notice[-]", "Hello world", null, null);
-            }
-        }
-    }
 }

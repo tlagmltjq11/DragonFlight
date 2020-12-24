@@ -71,14 +71,18 @@ public class PopupOption : MonoBehaviour
 
     public void OnPressOk()
     {
-        if (m_okBtnDel != null)
+        m_okBtnDel();
+        PopupManager.Instance.ClosePopup();
+
+        /*
+                if (m_okBtnDel != null)
         {
             m_okBtnDel();
         }
         else
         {
             PopupManager.Instance.ClosePopup();
-        }
+        }*/
     }
 
     // Start is called before the first frame update

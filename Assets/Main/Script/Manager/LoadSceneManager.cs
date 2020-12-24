@@ -5,19 +5,6 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 public class LoadSceneManager : DonDestroy<LoadSceneManager>
 {
-    //DonDestroy를 상속받았기 때문에 싱글턴을 따로 구현하지 않아도 된다.
-    /*
-    //static 이므로 동일한 변수를 만들 수 없음. 딱 이것만 존재
-    static LoadSceneManager m_instance;
-    
-    public static LoadSceneManager Instance
-    {
-        get
-        {
-            return m_instance;
-        }
-    }
-    */
 
     public enum eSceneState
     {
@@ -52,17 +39,14 @@ public class LoadSceneManager : DonDestroy<LoadSceneManager>
         {
             return;
         }
+
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.NextScene);
+
         m_loadState = state;
         ///m_loadingBgSpr.enabled = true;
         m_loadSceneState = SceneManager.LoadSceneAsync(state.ToString());
     }
 
-    /*
-    private void OnGUI()
-    {
-        GUI.Label(new Rect(Screen.width / 2, Screen.height / 2 + 50, 150, 50), m_progressLabel);
-    }
-    */
 
     protected override void OnAwake()
     {
@@ -135,23 +119,27 @@ public class LoadSceneManager : DonDestroy<LoadSceneManager>
                         case eSceneState.Title:
                             PopupManager.Instance.OpenPopupOkCancel("[0000FF]Notice[-]", "게임을 종료하시겠습니까?", () => {
 #if UNITY_EDITOR
+                                SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
                                 EditorApplication.isPlaying = false;
 #else
+                                SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
                                 Application.Quit();
 #endif
-                            }, null, "예", "아니오");
+                            }, () => { SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); }, "예", "아니오");
                             break;
                         case eSceneState.Lobby:
                             PopupManager.Instance.OpenPopupOkCancel("[0000FF]Notice[-]", "타이틀 화면으로 돌아가시겠습니까?", () => {
+                                SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
                                 LoadSceneAsync(eSceneState.Title);
                                 PopupManager.Instance.ClosePopup();
-                            }, null, "예", "아니오");
+                            }, () => { SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); }, "예", "아니오");
                             break;
                         case eSceneState.Game:
                             PopupManager.Instance.OpenPopupOkCancel("[0000FF]Notice[-]", "로비 화면으로 돌아가시겠습니까?", () => {
+                                SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
                                 LoadSceneAsync(eSceneState.Lobby);
                                 PopupManager.Instance.ClosePopup();
-                            }, null, "예", "아니오");
+                            }, () => { SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); }, "예", "아니오");
                             break;
                     }
                 }

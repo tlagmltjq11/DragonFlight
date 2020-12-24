@@ -54,6 +54,11 @@ public class PlayerDataManager : DonDestroy<PlayerDataManager>
         return true;
     }
 
+    public int GetGem()
+    {
+        return m_myData.m_gemOwned;
+    }
+
     public int GetCurHero()
     {
         return m_myData.m_curSelectHero + 1;
@@ -132,11 +137,5 @@ public class PlayerDataManager : DonDestroy<PlayerDataManager>
     {
         //PlayerPrefs.DeleteAll();
         LoadData();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

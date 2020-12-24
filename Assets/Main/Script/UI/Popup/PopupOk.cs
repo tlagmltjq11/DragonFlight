@@ -32,6 +32,11 @@ public class PopupOk : MonoBehaviour
 
     public void OnPressOk()
     {
+
+        m_okBtnDel();
+        PopupManager.Instance.ClosePopup();
+
+        /*
         if (m_okBtnDel != null)
         {
             m_okBtnDel();
@@ -40,6 +45,7 @@ public class PopupOk : MonoBehaviour
         {
             PopupManager.Instance.ClosePopup();
         }
+        */
     }
 
     // Start is called before the first frame update
