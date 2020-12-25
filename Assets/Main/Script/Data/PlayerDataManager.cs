@@ -5,11 +5,29 @@ using System.Text;
 
 public class PlayerDataManager : DonDestroy<PlayerDataManager>
 {
-    public const int BASE_GOLD = 1000;
+    #region Field
+    public const int BASE_GOLD = 2000;
     public const int BASE_GEM = 100;
+    public const int EQUIPS = 14;
 
-    PlayerData m_myData = new PlayerData();
+    PlayerData m_myData = new PlayerData(13, EQUIPS);
+    #endregion
 
+    #region Unity Methods
+    protected override void OnAwake()
+    {
+        PlayerPrefs.DeleteAll();
+        LoadData();
+    }
+
+    private void Update()
+    {
+        Debug.Log(GetCurEquipItem(Item.eItemClass.Weapon).ToString() + GetCurEquipItem(Item.eItemClass.Armor).ToString() + GetCurEquipItem(Item.eItemClass.Acc).ToString());
+    }
+
+    #endregion
+
+    #region Public Methods
     public int GetBestScore()
     {
         return m_myData.m_bestScore;
@@ -18,6 +36,11 @@ public class PlayerDataManager : DonDestroy<PlayerDataManager>
     public void SetBestScore(int score)
     {
         m_myData.m_bestScore = score;
+    }
+
+    public int GetGold()
+    {
+        return m_myData.m_goldOwned;
     }
 
     public int IncreaseGold(int gold)
@@ -31,7 +54,6 @@ public class PlayerDataManager : DonDestroy<PlayerDataManager>
         {
             return false;
         }
-
 
         m_myData.m_goldOwned -= gold;
         return true;
@@ -80,6 +102,45 @@ public class PlayerDataManager : DonDestroy<PlayerDataManager>
         SaveData();
     }
 
+    public int GetEquipmentsNums()
+    {
+        return EQUIPS;
+    }
+
+    public int GetCurEquipItem(Item.eItemClass c)
+    {
+        return m_myData.m_curEquipItem[(int)c];
+    }
+
+    public void SetCurEquipItem(Item.eItemClass c, int index)
+    {
+        m_myData.m_curEquipItem[(int)c] = index;
+        SaveData();
+    }
+
+    public bool IsEquippedItem(Item.eItemClass c, int index)
+    {
+        if(m_myData.m_curEquipItem[(int)c] == index)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool IsOwnedItem(int index)
+    {
+        return m_myData.m_ownendItems[index];
+    }
+
+    public void BuyItem(int index)
+    {
+        m_myData.m_ownendItems[index] = true;
+        SaveData();
+    }
+
     public string ArrayToString<T>(T[] array)
     {
         StringBuilder sb = new StringBuilder();
@@ -114,8 +175,17 @@ public class PlayerDataManager : DonDestroy<PlayerDataManager>
         PlayerPrefs.SetInt("GEM_OWNED", m_myData.m_gemOwned);
         PlayerPrefs.SetInt("BEST_SCORE", m_myData.m_bestScore);
         PlayerPrefs.SetInt("SELECT_HERO", m_myData.m_curSelectHero);
+
+        PlayerPrefs.SetInt("EQUIP_WEAPON", m_myData.m_curEquipItem[(int)Item.eItemClass.Weapon]);
+        PlayerPrefs.SetInt("EQUIP_ARMOR", m_myData.m_curEquipItem[(int)Item.eItemClass.Armor]);
+        PlayerPrefs.SetInt("EQUIP_ACC", m_myData.m_curEquipItem[(int)Item.eItemClass.Acc]);
+
         var result = ArrayToString(m_myData.m_heroesSlot);
         PlayerPrefs.SetString("HEROES_SLOT", result);
+
+        var result2 = ArrayToString(m_myData.m_ownendItems);
+        PlayerPrefs.SetString("OWNED_ITEMS", result2);
+
         PlayerPrefs.Save();
     }
 
@@ -126,16 +196,23 @@ public class PlayerDataManager : DonDestroy<PlayerDataManager>
         m_myData.m_gemOwned = PlayerPrefs.GetInt("GEM_OWNED", BASE_GEM);
         m_myData.m_bestScore = PlayerPrefs.GetInt("BEST_SCORE", 0);
         m_myData.m_curSelectHero = PlayerPrefs.GetInt("SELECT_HERO", 0);
+
+        m_myData.m_curEquipItem[(int)Item.eItemClass.Weapon] = PlayerPrefs.GetInt("EQUIP_WEAPON", -1);
+        m_myData.m_curEquipItem[(int)Item.eItemClass.Armor] = PlayerPrefs.GetInt("EQUIP_ARMOR", -1);
+        m_myData.m_curEquipItem[(int)Item.eItemClass.Acc] = PlayerPrefs.GetInt("EQUIP_ACC", -1);
+
         var result = PlayerPrefs.GetString("HEROES_SLOT", string.Empty);
-
         //save한적이 없을때 예외처리.
-        if(!string.IsNullOrEmpty(result))
+        if (!string.IsNullOrEmpty(result))
+        {
             m_myData.m_heroesSlot = StringToArray<bool>(result);
-    }
+        }
 
-    protected override void OnAwake()
-    {
-        //PlayerPrefs.DeleteAll();
-        LoadData();
+        var result2 = PlayerPrefs.GetString("OWNED_ITEMS", string.Empty);
+        if (!string.IsNullOrEmpty(result2))
+        {
+            m_myData.m_ownendItems = StringToArray<bool>(result2);
+        }
     }
+    #endregion
 }

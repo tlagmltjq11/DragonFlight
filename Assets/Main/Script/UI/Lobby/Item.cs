@@ -5,40 +5,79 @@ using UnityEngine;
 public class Item : MonoBehaviour
 {
     #region Field
+    public enum eItemClass
+    {
+        Weapon,
+        Armor,
+        Acc,
+        Max
+    }
+
     [SerializeField]
     UISprite m_outerGlow;
     [SerializeField]
     UISprite m_salesCompleted;
     LobbyMenu_Shop m_shop;
+    LobbyMenu_Inventory m_inven;
 
     public LobbyMenu_Shop.eItemType m_type;
+    public eItemClass m_class;
     public string m_manual;
     public string m_name;
     public int m_price;
-    public int m_damage;
+    public int m_stat;
 
     public bool m_isSaled;
+    public bool m_isEquipped;
+
+    public UISprite m_icon;
     #endregion
 
     #region Unity Methods
     void Awake()
     {
         m_outerGlow.enabled = false;
-        m_shop = GameObject.FindWithTag("Shop").GetComponent<LobbyMenu_Shop>();
-
-        PlayerPrefs.DeleteAll();
-        m_isSaled = PlayerPrefs.GetInt("IsOwned" + m_type.ToString()) == 1 ? true : false;
     }
 
     void Start()
     {
-        if (m_isSaled)
+        ILobbyMenu parent = gameObject.GetComponentInParent<ILobbyMenu>();
+
+        if (parent.gObj.name.Equals("Menu_Shop"))
         {
-            m_salesCompleted.enabled = true;
+            m_shop = parent.gObj.GetComponent<LobbyMenu_Shop>();
+
+            m_isSaled = PlayerDataManager.Instance.IsOwnedItem((int)m_type);
+        }
+        else if (parent.gObj.name.Equals("Menu_Inventory"))
+        {
+            m_inven = parent.gObj.GetComponent<LobbyMenu_Inventory>();
+
+            m_isEquipped = PlayerDataManager.Instance.IsEquippedItem(m_class ,(int)m_type);
+        }
+
+
+        if (m_shop != null)
+        {
+            if (m_isSaled)
+            {
+                m_salesCompleted.enabled = true;
+            }
+            else
+            {
+                m_salesCompleted.enabled = false;
+            }
         }
         else
         {
-            m_salesCompleted.enabled = false;
+            if(m_isEquipped)
+            {
+                m_salesCompleted.enabled = true;
+            }
+            else
+            {
+                m_salesCompleted.enabled = false;
+            }
         }
     }
     #endregion
@@ -46,7 +85,21 @@ public class Item : MonoBehaviour
     #region Public Methods
     public void OnSelect()
     {
-        m_shop.OnSelectItem(this);
+        if(!IsSelected())
+        {
+            //중복재생을 막기 위함.
+            SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+        }
+
+        if(m_shop != null)
+        {
+            m_shop.OnSelectItem(this);
+        }
+        else
+        {
+            //인벤 셀렉트
+            m_inven.OnSelectItem(this);
+        }
     }
 
     public bool IsSelected()
@@ -70,6 +123,18 @@ public class Item : MonoBehaviour
     {
         m_salesCompleted.enabled = true;
         m_isSaled = true;
+    }
+
+    public void Equipped()
+    {
+        m_salesCompleted.enabled = true;
+        m_isEquipped = true;
+    }
+
+    public void UnEquipped()
+    {
+        m_salesCompleted.enabled = false;
+        m_isEquipped = false;
     }
     #endregion
 }

@@ -69,7 +69,6 @@ public class BuffManager : SingletonMonoBehaviour<BuffManager>
             var buff = m_buffList[valuePair.Key];
             buff.m_lifeTime -= Time.deltaTime;
 
-            Debug.Log(buff.m_lifeTime);
             if (buff.m_lifeTime <= 0)
             {
                 switch (buff.m_buffType)

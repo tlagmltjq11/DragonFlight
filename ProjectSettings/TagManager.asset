@@ -11,6 +11,7 @@ TagManager:
   - Invincible
   - ShockWave
   - Shop
+  - Menu
   layers:
   - Default
   - TransparentFX

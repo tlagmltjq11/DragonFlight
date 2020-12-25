@@ -96,7 +96,7 @@ public class LobbyMenu_Character : MonoBehaviour, ILobbyMenu
                 PopupManager.Instance.ClosePopup();
                 PlayerDataManager.Instance.BuyCharacter(m_selectIndex);
 
-                m_gemOwned.text = "보유     : " + PlayerDataManager.Instance.GetGem();
+                m_gemOwned.text = "보유     : [00FF00]" + PlayerDataManager.Instance.GetGem() + "[-]";
 
                 RefreshInfo(m_selectIndex);
             }
@@ -162,7 +162,7 @@ public class LobbyMenu_Character : MonoBehaviour, ILobbyMenu
         m_charSprTween.ResetToBeginning();
         m_charSprTween.PlayForward();
 
-        m_gemOwned.text = "보유     : " + PlayerDataManager.Instance.GetGem();
+        m_gemOwned.text = "보유     : [00FF00]" + PlayerDataManager.Instance.GetGem() + "[-]";
 
         RefreshInfo(index);
     }

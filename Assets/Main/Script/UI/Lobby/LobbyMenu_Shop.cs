@@ -7,14 +7,20 @@ public class LobbyMenu_Shop : MonoBehaviour, ILobbyMenu
     #region Field
     public enum eItemType
     {
-        item_bomb, //Canon
-        item_b1,
-        item_b2,
-        item_b3,
-        item_b4,
-        item_b5,
-        item_b6,
-        item_b7,
+        Canon,
+        DualShot,
+        TruckWheel,
+        example1,
+        example2,
+        example3,
+        example4,
+        example5,
+        example6,
+        example7,
+        example8,
+        example9,
+        example10,
+        example11,
         Max
     }
 
@@ -25,9 +31,15 @@ public class LobbyMenu_Shop : MonoBehaviour, ILobbyMenu
     [SerializeField]
     UILabel m_name;
     [SerializeField]
+    UILabel m_stat;
+    [SerializeField]
     UIButton m_purchase;
     [SerializeField]
     UISprite m_goldSpr;
+    [SerializeField]
+    LobbyController m_lobby;
+    [SerializeField]
+    UILabel m_goldOwned;
 
     public Item[] m_itemList;
     Item m_curItem;
@@ -65,7 +77,7 @@ public class LobbyMenu_Shop : MonoBehaviour, ILobbyMenu
         {
             if (!m_itemList[i].m_isSaled)
             {
-                m_itemList[i].OnSelect();
+                OnSelectItem(m_itemList[i]);
                 LoadItems(m_itemList[i].m_type); //앞순서부터 첫번째로 안팔린 상태의 아이템을 메뉴얼창에 로드시킨다.
                 m_curItem = m_itemList[i]; //현재 선택된 아이템
                 check = true;
@@ -78,17 +90,39 @@ public class LobbyMenu_Shop : MonoBehaviour, ILobbyMenu
         {
             m_goldSpr.enabled = false;
             m_purchase.isEnabled = false;
+            m_goldOwned.text = "보유      : [00FF00]" + PlayerDataManager.Instance.GetGold() + "[-]";
         }
+    }
+
+    public void OnPressBack()
+    {
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+        m_lobby.gameObject.SetActive(true);
+        gameObject.SetActive(false);
     }
 
     public void OnBuyItem()
     {
         if(m_curItem != null)
         {
-            PlayerPrefs.SetInt("IsOwned" + m_curItem.m_type.ToString(), 1);
-            m_curItem.SalesCompleted();
+            SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
 
-            SetCurItem();
+            PopupManager.Instance.OpenPopupOkCancel("Notice", string.Format("아이템 [00FF00]{0}[-]를 골드 [00FF00]{1}개[-]로 구입하시겠습니까?", m_curItem.m_name, m_curItem.m_price), () =>
+            {
+                SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+
+                if (PlayerDataManager.Instance.DecreaseGold(m_curItem.m_price))
+                {
+                    PopupManager.Instance.ClosePopup();
+                    PlayerDataManager.Instance.BuyItem((int)m_curItem.m_type);
+                    m_curItem.SalesCompleted();
+                    SetCurItem();
+                }
+                else
+                {
+                    PopupManager.Instance.OpenPopupOk("Notice", "소지한 골드가 부족합니다.", () => { SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); });
+                }
+            }, () => { SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); });
         }
     }
 
@@ -105,6 +139,7 @@ public class LobbyMenu_Shop : MonoBehaviour, ILobbyMenu
         }
 
         m_curItem = item;
+
         //현재 아이템의 선택효과를 켜준다.
         item.Selected();
         //해당 아이템의 설명을 띄워준다.
@@ -128,6 +163,23 @@ public class LobbyMenu_Shop : MonoBehaviour, ILobbyMenu
         m_name.text = m_itemList[(int)type].m_name;
         m_manual.text = m_itemList[(int)type].m_manual;
         m_price.text = m_itemList[(int)type].m_price.ToString();
+
+        switch (m_curItem.m_class)
+        {
+            case Item.eItemClass.Weapon:
+                m_stat.text = "[FF0000]공격력    : " + m_itemList[(int)type].m_stat.ToString();
+                break;
+            case Item.eItemClass.Armor:
+                m_stat.text = "[FF0000]방어횟수  : " + m_itemList[(int)type].m_stat.ToString() + "회";
+                break;
+            case Item.eItemClass.Acc:
+                m_stat.text = "[FF0000]점수증가  : " + m_itemList[(int)type].m_stat.ToString() + "배";
+                break;
+            default:
+                break;
+        }
+
+        m_goldOwned.text = "보유      : [00FF00]" + PlayerDataManager.Instance.GetGold() + "[-]";
     }
     #endregion
 }
