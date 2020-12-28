@@ -5,6 +5,14 @@ using UnityEngine;
 public class LobbyMenu_Inventory : MonoBehaviour, ILobbyMenu
 {
     #region Field
+    public enum eShopType
+    {
+        Weapon,
+        Armor,
+        Acc,
+        ALL
+    }
+
     [SerializeField]
     LobbyMenu_Character m_charMenu;
     [SerializeField]
@@ -20,7 +28,12 @@ public class LobbyMenu_Inventory : MonoBehaviour, ILobbyMenu
     [SerializeField]
     UILabel m_name;
     [SerializeField]
+    UILabel m_class;
+    [SerializeField]
     UILabel m_stat;
+    [SerializeField]
+    UIButton[] m_sortBtns;
+
     public UISprite[] m_equipItems;
     TweenPosition m_charTween;
     Dictionary<string, Item> m_itemDict = new Dictionary<string, Item>();
@@ -31,6 +44,7 @@ public class LobbyMenu_Inventory : MonoBehaviour, ILobbyMenu
     private void Awake()
     {
         m_charTween = m_charSpr.gameObject.GetComponent<TweenPosition>();
+        m_equipBtn.isEnabled = false;
     }
     #endregion
 
@@ -49,11 +63,81 @@ public class LobbyMenu_Inventory : MonoBehaviour, ILobbyMenu
     {
         gameObject.SetActive(false);
     }
+
     public void OnPressBack()
     {
         SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
         m_lobby.gameObject.SetActive(true);
-        gameObject.SetActive(false);
+        CloseUI();
+    }
+
+    public void OnSortByWeapon()
+    {
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+
+        foreach (Item item in m_itemDict.Values)
+        {
+            if (item.m_class == Item.eItemClass.Weapon)
+            {
+                item.gameObject.SetActive(true);
+            }
+            else
+            {
+                item.gameObject.SetActive(false);
+            }
+        }
+
+        m_uiGrid.Reposition();
+    }
+
+    public void OnSortByArmor()
+    {
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+
+        foreach (Item item in m_itemDict.Values)
+        {
+            if (item.m_class == Item.eItemClass.Armor)
+            {
+                item.gameObject.SetActive(true);
+            }
+            else
+            {
+                item.gameObject.SetActive(false);
+            }
+        }
+
+        m_uiGrid.Reposition();
+    }
+
+    public void OnSortByAcc()
+    {
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+
+        foreach (Item item in m_itemDict.Values)
+        {
+            if (item.m_class == Item.eItemClass.Acc)
+            {
+                item.gameObject.SetActive(true);
+            }
+            else
+            {
+                item.gameObject.SetActive(false);
+            }
+        }
+
+        m_uiGrid.Reposition();
+    }
+
+    public void OnSortByAll()
+    {
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+
+        foreach (Item item in m_itemDict.Values)
+        {
+            item.gameObject.SetActive(true);
+        }
+
+        m_uiGrid.Reposition();
     }
 
     public void OnEquipItem()
@@ -70,6 +154,7 @@ public class LobbyMenu_Inventory : MonoBehaviour, ILobbyMenu
                 PlayerDataManager.Instance.SetCurEquipItem(m_curItem.m_class, (int)m_curItem.m_type);
                 LoadEquipItemInfo(m_curItem);
                 m_curItem.Equipped();
+                m_equipBtn.isEnabled = false;
 
             }, () => { SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); });
         }
@@ -178,12 +263,15 @@ public class LobbyMenu_Inventory : MonoBehaviour, ILobbyMenu
         {
             case Item.eItemClass.Weapon:
                 m_stat.text = "[FF0000]공격력    : " + item.m_stat.ToString();
+                m_class.text = "[FFFF00]무기";
                 break;
             case Item.eItemClass.Armor:
                 m_stat.text = "[FF0000]방어횟수  : " + item.m_stat.ToString() + "회";
+                m_class.text = "[FFFF00]방어구";
                 break;
             case Item.eItemClass.Acc:
                 m_stat.text = "[FF0000]점수증가  : " + item.m_stat.ToString() + "배";
+                m_class.text = "[FFFF00]악세사리";
                 break;
             default:
                 break;

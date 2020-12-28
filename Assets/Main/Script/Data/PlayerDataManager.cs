@@ -8,7 +8,7 @@ public class PlayerDataManager : DonDestroy<PlayerDataManager>
     #region Field
     public const int BASE_GOLD = 2000;
     public const int BASE_GEM = 100;
-    public const int EQUIPS = 14;
+    public const int EQUIPS = 18;
 
     PlayerData m_myData = new PlayerData(13, EQUIPS);
     #endregion
@@ -19,12 +19,6 @@ public class PlayerDataManager : DonDestroy<PlayerDataManager>
         PlayerPrefs.DeleteAll();
         LoadData();
     }
-
-    private void Update()
-    {
-        Debug.Log(GetCurEquipItem(Item.eItemClass.Weapon).ToString() + GetCurEquipItem(Item.eItemClass.Armor).ToString() + GetCurEquipItem(Item.eItemClass.Acc).ToString());
-    }
-
     #endregion
 
     #region Public Methods

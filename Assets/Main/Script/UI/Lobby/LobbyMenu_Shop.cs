@@ -9,18 +9,30 @@ public class LobbyMenu_Shop : MonoBehaviour, ILobbyMenu
     {
         Canon,
         DualShot,
-        TruckWheel,
-        example1,
-        example2,
-        example3,
-        example4,
-        example5,
-        example6,
-        example7,
-        example8,
-        example9,
-        example10,
-        example11,
+        Cloak,
+        ClothArmor,
+        Necklace,
+        Ring,
+        Dummy1,
+        Dummy2,
+        Dummy3,
+        Dummy4,
+        Dummy5,
+        Dummy6,
+        Dummy7,
+        Dummy8,
+        Dummy9,
+        Dummy10,
+        Dummy11,
+        Dummy12,
+        Max
+    }
+
+    public enum eShopType
+    {
+        Weapon,
+        Armor,
+        Acc,
         Max
     }
 
@@ -33,24 +45,29 @@ public class LobbyMenu_Shop : MonoBehaviour, ILobbyMenu
     [SerializeField]
     UILabel m_stat;
     [SerializeField]
+    UILabel m_class;
+    [SerializeField]
     UIButton m_purchase;
+    [SerializeField]
+    UIButton[] m_shopTypeBtn;
     [SerializeField]
     UISprite m_goldSpr;
     [SerializeField]
     LobbyController m_lobby;
     [SerializeField]
     UILabel m_goldOwned;
+    [SerializeField]
+    UIGrid m_grid;
 
     public Item[] m_itemList;
+
     Item m_curItem;
+
+    bool m_temp = false;
 
     #endregion
 
     #region Unity Methods
-    void Start()
-    {
-
-    }
     #endregion
 
     #region Public Methods
@@ -61,12 +78,123 @@ public class LobbyMenu_Shop : MonoBehaviour, ILobbyMenu
     public void SetUI()
     {
         gameObject.SetActive(true);
-        SetCurItem();
+        OnWeapon();
     }
 
     public void CloseUI()
     {
         gameObject.SetActive(false);
+        m_temp = false;
+    }
+
+    public void OnWeapon()
+    {
+        //중복재생방지
+        if (m_shopTypeBtn[(int)eShopType.Weapon].isEnabled && m_temp == true)
+        {
+            SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+        }
+
+        m_temp = true;
+
+        for (int i=0; i<(int)eShopType.Max; i++)
+        {
+            if(m_shopTypeBtn[i].isEnabled == false)
+            {
+                m_shopTypeBtn[i].isEnabled = true;
+
+                break;
+            }
+        }
+
+        m_shopTypeBtn[(int)eShopType.Weapon].isEnabled = false;
+
+        for (int i = 0; i < m_itemList.Length; i++)
+        {
+            if(m_itemList[i].m_class == Item.eItemClass.Weapon)
+            {
+                m_itemList[i].gameObject.SetActive(true);
+            }
+            else
+            {
+                m_itemList[i].gameObject.SetActive(false);
+            }
+        }
+
+        m_grid.Reposition();
+        SetCurItem();
+    }
+
+    public void OnArmor()
+    {
+        //중복재생방지
+        if (m_shopTypeBtn[(int)eShopType.Armor].isEnabled)
+        {
+            SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+        }
+
+        for (int i = 0; i < (int)eShopType.Max; i++)
+        {
+            if (m_shopTypeBtn[i].isEnabled == false)
+            {
+                m_shopTypeBtn[i].isEnabled = true;
+
+                break;
+            }
+        }
+
+        m_shopTypeBtn[(int)eShopType.Armor].isEnabled = false;
+
+        for (int i = 0; i < m_itemList.Length; i++)
+        {
+            if (m_itemList[i].m_class == Item.eItemClass.Armor)
+            {
+                m_itemList[i].gameObject.SetActive(true);
+            }
+            else
+            {
+                m_itemList[i].gameObject.SetActive(false);
+            }
+        }
+
+        m_grid.Reposition();
+        SetCurItem();
+    }
+
+    public void OnAcc()
+    {
+        //중복재생방지
+        if (m_shopTypeBtn[(int)eShopType.Acc].isEnabled)
+        {
+            SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+        }
+
+        for (int i = 0; i < (int)eShopType.Max; i++)
+        {
+            if (m_shopTypeBtn[i].isEnabled == false)
+            {
+                m_shopTypeBtn[i].isEnabled = true;
+
+                break;
+            }
+        }
+
+        m_shopTypeBtn[(int)eShopType.Acc].isEnabled = false;
+
+        for (int i = 0; i < m_itemList.Length; i++)
+        {
+            if (m_itemList[i].m_class == Item.eItemClass.Acc)
+            {
+                m_itemList[i].gameObject.SetActive(true);
+            }
+            else
+            {
+                m_itemList[i].gameObject.SetActive(false);
+            }
+        }
+
+        m_grid.Reposition();
+        SetCurItem();
     }
 
     public void SetCurItem()
@@ -75,13 +203,16 @@ public class LobbyMenu_Shop : MonoBehaviour, ILobbyMenu
 
         for (int i = 0; i < m_itemList.Length; i++)
         {
-            if (!m_itemList[i].m_isSaled)
+            if (m_itemList[i].gameObject.activeSelf)
             {
-                OnSelectItem(m_itemList[i]);
-                LoadItems(m_itemList[i].m_type); //앞순서부터 첫번째로 안팔린 상태의 아이템을 메뉴얼창에 로드시킨다.
-                m_curItem = m_itemList[i]; //현재 선택된 아이템
-                check = true;
-                break;
+                if (!m_itemList[i].m_isSaled)
+                {
+                    OnSelectItem(m_itemList[i]);
+                    LoadItems(m_itemList[i].m_type); //앞순서부터 첫번째로 안팔린 상태의 아이템을 메뉴얼창에 로드시킨다.
+                    m_curItem = m_itemList[i]; //현재 선택된 아이템
+                    check = true;
+                    break;
+                }
             }
         }
 
@@ -98,7 +229,7 @@ public class LobbyMenu_Shop : MonoBehaviour, ILobbyMenu
     {
         SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
         m_lobby.gameObject.SetActive(true);
-        gameObject.SetActive(false);
+        CloseUI();
     }
 
     public void OnBuyItem()
@@ -131,10 +262,13 @@ public class LobbyMenu_Shop : MonoBehaviour, ILobbyMenu
         //이전에 선택되어있던 아이템을 꺼준다.
         for (int i = 0; i < m_itemList.Length; i++)
         {
-            if(m_itemList[i].IsSelected())
+            if (m_itemList[i].gameObject.activeSelf)
             {
-                m_itemList[i].Release();
-                break;
+                if (m_itemList[i].IsSelected())
+                {
+                    m_itemList[i].Release();
+                    break;
+                }
             }
         }
 
@@ -168,12 +302,15 @@ public class LobbyMenu_Shop : MonoBehaviour, ILobbyMenu
         {
             case Item.eItemClass.Weapon:
                 m_stat.text = "[FF0000]공격력    : " + m_itemList[(int)type].m_stat.ToString();
+                m_class.text = "[FFFF00]무기";
                 break;
             case Item.eItemClass.Armor:
                 m_stat.text = "[FF0000]방어횟수  : " + m_itemList[(int)type].m_stat.ToString() + "회";
+                m_class.text = "[FFFF00]방어구";
                 break;
             case Item.eItemClass.Acc:
                 m_stat.text = "[FF0000]점수증가  : " + m_itemList[(int)type].m_stat.ToString() + "배";
+                m_class.text = "[FFFF00]악세사리";
                 break;
             default:
                 break;

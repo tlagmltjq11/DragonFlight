@@ -112,7 +112,7 @@ public class LobbyMenu_Character : MonoBehaviour, ILobbyMenu
         SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
         LoadCharacterSprite(PlayerDataManager.Instance.GetCurHero() - 1);
         m_lobby.gameObject.SetActive(true);
-        gameObject.SetActive(false);
+        CloseUI();
     }
 
     public void OnPressLeft()
