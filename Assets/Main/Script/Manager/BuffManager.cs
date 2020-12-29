@@ -10,6 +10,7 @@ public class BuffManager : SingletonMonoBehaviour<BuffManager>
         PowerShot,
         Invincible,
         Magnet,
+        Shield,
         Max
     }
 
@@ -21,7 +22,7 @@ public class BuffManager : SingletonMonoBehaviour<BuffManager>
 
     PlayerController m_player;
     Dictionary<eBuffType, Buff> m_buffList = new Dictionary<eBuffType, Buff>();
-    float[] durations = new float[] { 10f, 2.55f, 5f };
+    float[] durations = new float[] { 10f, 2.55f, 5f, 3f };
     CameraShake m_camShake;
     #endregion
 
@@ -54,6 +55,9 @@ public class BuffManager : SingletonMonoBehaviour<BuffManager>
                         GameManager.Instance.SetState(GameManager.eGameState.Normal);
                         m_player.SetShockWave(true);
                         break;
+                    case eBuffType.Shield:
+                        m_player.ShieldOff();
+                        break;
                 }
                 m_buffList.Remove(buff.m_buffType);
             }
@@ -80,6 +84,9 @@ public class BuffManager : SingletonMonoBehaviour<BuffManager>
                     break;
                 case eBuffType.Invincible:
                     GameManager.Instance.SetState(GameManager.eGameState.Invincible);
+                    break;
+                case eBuffType.Shield:
+                    m_player.ShieldOn();
                     break;
             }
         }

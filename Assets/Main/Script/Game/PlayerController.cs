@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     float m_speed = 8f;
 
     float m_moveScale;
+    [SerializeField]
     Collider2D m_collider;
 
     [SerializeField]
@@ -20,11 +21,16 @@ public class PlayerController : MonoBehaviour
 
     GameObject m_sfxMagnetObj;
     GameObject m_sfxShockWaveObj;
+    GameObject m_sfxShieldObj;
 
     GameObjectPool<ProjectileController> m_bulletPool;
     Animator m_animator;
     bool m_isDrag;
     Vector3 m_startPos;
+
+    Item m_armor = null;
+    int m_armorChance = 0;
+    bool m_canHit = true;
     #endregion
 
     #region Private Methods
@@ -81,6 +87,22 @@ public class PlayerController : MonoBehaviour
         m_sfxMagnetObj.SetActive(isOn);
     }
 
+    public void ShieldOn()
+    {
+        Debug.Log("실드온");
+        m_sfxShieldObj.SetActive(true);
+        StartCoroutine("Shield");
+        m_canHit = false;
+    }
+
+    public void ShieldOff()
+    {
+        Debug.Log("실드오프");
+        m_sfxShieldObj.SetActive(false);
+        //StopCoroutine("Shield"); //굳이없어도될듯.
+        m_canHit = true;
+    }
+
     public void SetInvincible()
     {
         //총쏘는것을 멈추게함.
@@ -99,11 +121,19 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         //방어구있을때처리
-        if(collision.tag.Equals("Monster"))
+        if(collision.tag.Equals("Monster") && m_canHit)
         {
             if (GameManager.Instance.GetState() != GameManager.eGameState.Invincible)
             {
-                GameManager.Instance.SetState(GameManager.eGameState.Result);
+                if (m_armorChance == 0)
+                {
+                    GameManager.Instance.SetState(GameManager.eGameState.Result);
+                }
+                else
+                {
+                    BuffManager.Instance.SetBuff(BuffManager.eBuffType.Shield);
+                    m_armorChance--;
+                }
             }
         }
     }
@@ -112,7 +142,6 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         m_animator = GetComponent<Animator>();
-        m_collider = GetComponent<Collider2D>();
         //시작한뒤 3초뒤에 0.1초 간격으로 계속 총알을 발사시킴.
         InvokeRepeating("CreateBullet", 3f, 0.1f);
 
@@ -132,10 +161,21 @@ public class PlayerController : MonoBehaviour
             return bullet; 
         });
 
+        m_armor = PlayerDataManager.Instance.GetCurEquipItem(Item.eItemClass.Armor);
+
+        //장착한 방어구가있다면
+        if(m_armor != null)
+        {
+            m_armorChance = m_armor.m_stat;
+        }
+
         m_sfxMagnetObj = Util.FindChildObject(gameObject, "Magnet");
         m_sfxShockWaveObj = Util.FindChildObject(gameObject, "ShockWave");
+        m_sfxShieldObj = Util.FindChildObject(gameObject, "Shield");
+
         m_sfxMagnetObj.SetActive(false);
         SetShockWave(false);
+        m_sfxShieldObj.SetActive(false);
 
         LoadCharacterSprite();
     }
@@ -197,6 +237,41 @@ public class PlayerController : MonoBehaviour
             m_startPos = movePos;
 
         }
+    }
+    #endregion
+
+    #region Coroutine
+    IEnumerator Shield()
+    {
+        float time = 0f;
+        bool temp = false;
+
+        while(time < 3f)
+        {
+            if (!temp)
+            {
+                m_partsRenderer[0].enabled = false;
+                m_partsRenderer[1].enabled = false;
+                m_partsRenderer[2].enabled = false;
+
+                temp = true;
+            }
+            else
+            {
+                m_partsRenderer[0].enabled = true;
+                m_partsRenderer[1].enabled = true;
+                m_partsRenderer[2].enabled = true;
+
+                temp = false;
+            }
+
+            time += 0.25f;
+            yield return new WaitForSeconds(0.25f);
+        }
+
+        m_partsRenderer[0].enabled = true;
+        m_partsRenderer[1].enabled = true;
+        m_partsRenderer[2].enabled = true;
     }
     #endregion
 }
