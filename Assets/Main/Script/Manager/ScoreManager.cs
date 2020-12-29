@@ -4,22 +4,33 @@ using UnityEngine;
 
 public class ScoreManager : SingletonMonoBehaviour<ScoreManager>
 {
+    #region Field
     [SerializeField]
     UILabel m_goldCountLabel;
+    [SerializeField]
+    UILabel m_gemCountLabel;
     [SerializeField]
     UILabel m_huntScoreLabel;
     [SerializeField]
     UILabel m_flightScoreLabel;
 
     int m_goldCount;
+    int m_gemCount;
     int m_huntScore;
     int m_flightScore;
+    #endregion
 
-    public int SetGold(int gold)
+    #region Public Methods
+    public void SetGold(int gold)
     {
         m_goldCount += gold;
         m_goldCountLabel.text = m_goldCount.ToString();
-        return m_goldCount;
+    }
+
+    public void SetGem(int gem)
+    {
+        m_gemCount += gem;
+        m_gemCountLabel.text = m_gemCount.ToString();
     }
 
     public int SetHuntScore(int score)
@@ -51,17 +62,19 @@ public class ScoreManager : SingletonMonoBehaviour<ScoreManager>
         return m_goldCount;
     }
 
+    public int GetGem()
+    {
+        return m_gemCount;
+    }
+    #endregion
 
+    #region Unity Methods
     protected override void OnStart()
     {
         m_goldCount = 0;
+        m_gemCount = 0;
         m_huntScore = 0;
         m_flightScore = 0;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+    #endregion
 }

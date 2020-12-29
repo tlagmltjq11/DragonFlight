@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BuffManager : SingletonMonoBehaviour<BuffManager>
 {
+    #region Field
     public enum eBuffType
     {
         PowerShot,
@@ -22,46 +23,19 @@ public class BuffManager : SingletonMonoBehaviour<BuffManager>
     Dictionary<eBuffType, Buff> m_buffList = new Dictionary<eBuffType, Buff>();
     float[] durations = new float[] { 10f, 2.55f, 5f };
     CameraShake m_camShake;
-    public void SetBuff(eBuffType buff)
-    {
-        if(buff == eBuffType.Invincible)
-        {
-            m_camShake.ShakeCamera();
-        }
+    #endregion
 
-        //똑같은 버프는 중복이아니라 시간리셋으로 구현하는게 맞음.
-        if (!m_buffList.ContainsKey(buff))
-        {
-            m_buffList.Add(buff, new Buff() { m_lifeTime = durations[(int)buff], m_buffType = buff });
-            switch(buff)
-            {
-                case eBuffType.Magnet:
-                    m_player.SetMagnet(true);
-                    break;
-                case eBuffType.Invincible:
-                    //m_player.SetInvincible();
-                    GameManager.Instance.SetState(GameManager.eGameState.Invincible);
-                    break;
-            }
-        }
-        else
-        {
-            var findBuff = m_buffList[buff];
-            findBuff.m_lifeTime = durations[(int)buff];
-        }
-    }
-
+    #region Unity Methods
     protected override void OnStart()
     {
         m_camShake = Camera.main.GetComponent<CameraShake>();
         m_player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         //딕셔너리는 foreach가 훨씬 편함. for문으로 하면 아래처럼됨.
-        for(int i=0; i<m_buffList.Count; i++)
+        for (int i = 0; i < m_buffList.Count; i++)
         {
             var data = m_buffList.GetEnumerator();
             data.MoveNext();
@@ -79,11 +53,42 @@ public class BuffManager : SingletonMonoBehaviour<BuffManager>
                     case eBuffType.Invincible:
                         GameManager.Instance.SetState(GameManager.eGameState.Normal);
                         m_player.SetShockWave(true);
-                        Debug.Log("Exit");
                         break;
                 }
                 m_buffList.Remove(buff.m_buffType);
             }
         }
     }
+    #endregion
+
+    #region Public Methods
+    public void SetBuff(eBuffType buff)
+    {
+        if(buff == eBuffType.Invincible)
+        {
+            m_camShake.ShakeCamera();
+        }
+
+        
+        if (!m_buffList.ContainsKey(buff))
+        {
+            m_buffList.Add(buff, new Buff() { m_lifeTime = durations[(int)buff], m_buffType = buff });
+            switch(buff)
+            {
+                case eBuffType.Magnet:
+                    m_player.SetMagnet(true);
+                    break;
+                case eBuffType.Invincible:
+                    GameManager.Instance.SetState(GameManager.eGameState.Invincible);
+                    break;
+            }
+        }
+        else
+        {
+            var findBuff = m_buffList[buff];
+            //똑같은 버프는 중복이아니라 시간리셋으로 구현하는게 맞음.
+            findBuff.m_lifeTime = durations[(int)buff];
+        }
+    }
+    #endregion
 }

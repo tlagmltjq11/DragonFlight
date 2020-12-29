@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CameraShake : MonoBehaviour
 {
+    #region Field
     [SerializeField]
     float m_duration;
     [SerializeField]
@@ -12,27 +13,14 @@ public class CameraShake : MonoBehaviour
     bool m_isStart;
 
     Vector3 m_orgPos;
+    #endregion
 
-    public void ShakeCamera()
-    {
-        m_isStart = true;
-        m_time = 0f;
-
-    }
-
-    public void Stop()
-    {
-        m_isStart = false;
-        m_time = 0f;
-    }
-
-    // Start is called before the first frame update
+    #region Unity Methods
     void Start()
     {
         m_orgPos = transform.position;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (m_isStart)
@@ -51,4 +39,20 @@ public class CameraShake : MonoBehaviour
             transform.position = new Vector3(dir.x, dir.y, m_orgPos.z);
         }
     }
+    #endregion
+
+    #region Public Methods
+    public void ShakeCamera()
+    {
+        m_isStart = true;
+        m_time = 0f;
+    }
+
+    public void Stop()
+    {
+        m_isStart = false;
+        m_time = 0f;
+    }
+    #endregion
+
 }

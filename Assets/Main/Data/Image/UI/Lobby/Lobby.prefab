@@ -241,7 +241,7 @@ MonoBehaviour:
     paddingTop: 7
     paddingBottom: 1
   - name: item_bomb
-    x: 402
+    x: 789
     y: 1309
     width: 128
     height: 128
@@ -254,7 +254,7 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: item_break
-    x: 531
+    x: 402
     y: 1309
     width: 128
     height: 128
@@ -280,7 +280,7 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: item_formation
-    x: 660
+    x: 531
     y: 1309
     width: 128
     height: 128
@@ -293,10 +293,23 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: item_gem
-    x: 789
+    x: 660
     y: 1309
     width: 128
     height: 128
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
+  - name: Missile
+    x: 996
+    y: 2000
+    width: 18
+    height: 48
     borderLeft: 0
     borderRight: 0
     borderTop: 0

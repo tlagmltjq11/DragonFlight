@@ -151,7 +151,8 @@ public class LobbyMenu_Inventory : MonoBehaviour, ILobbyMenu
                 SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
                 PopupManager.Instance.ClosePopup();
 
-                PlayerDataManager.Instance.SetCurEquipItem(m_curItem.m_class, (int)m_curItem.m_type);
+                PlayerDataManager.Instance.SetCurEquipItem(m_curItem.m_class, m_curItem.m_type);
+                PlayerDataManager.Instance.SetCurEquipItemNums(m_curItem.m_class, (int)m_curItem.m_type);
                 LoadEquipItemInfo(m_curItem);
                 m_curItem.Equipped();
                 m_equipBtn.isEnabled = false;

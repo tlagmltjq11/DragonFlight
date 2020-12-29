@@ -9,8 +9,9 @@ public class PlayerData
     public int m_gemOwned;
     public int m_curSelectHero;
     public bool[] m_heroesSlot;
-    public int[] m_curEquipItem;
     public bool[] m_ownendItems;
+    public int[] m_curEquipItemNums;
+    public Item[] m_curEquipItem;
 
     public PlayerData(int heroes, int items)
     {
@@ -18,11 +19,12 @@ public class PlayerData
         m_heroesSlot[0] = true;
 
         m_ownendItems = new bool[items];
-        m_curEquipItem = new int[(int)Item.eItemClass.Max];
+        m_curEquipItemNums = new int[(int)Item.eItemClass.Max];
+        m_curEquipItem = new Item[(int)Item.eItemClass.Max];
 
-        for(int i=0; i<m_curEquipItem.Length; i++)
+        for (int i=0; i< m_curEquipItemNums.Length; i++)
         {
-            m_curEquipItem[i] = -1; //아무것도 장비하지 않은 상태
+            m_curEquipItemNums[i] = -1; //아무것도 장비하지 않은 상태
         }
     }
 }

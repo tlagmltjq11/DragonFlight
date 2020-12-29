@@ -27,7 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2215013281594004701}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 417.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -114,6 +114,7 @@ MonoBehaviour:
   m_isSaled: 0
   m_isEquipped: 0
   m_icon: {fileID: 2215013282669152078}
+  m_sprite: {fileID: 0}
 --- !u!1 &2215013281719171065
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    #region Field
     Vector3 m_dir;
     float m_speed = 8f;
 
@@ -24,7 +25,9 @@ public class PlayerController : MonoBehaviour
     Animator m_animator;
     bool m_isDrag;
     Vector3 m_startPos;
+    #endregion
 
+    #region Private Methods
     void KeyProcess()
     {
         m_dir.x = Input.GetAxis("Horizontal");
@@ -32,30 +35,16 @@ public class PlayerController : MonoBehaviour
 
     void CreateBullet()
     {
-        //var obj = Instantiate(m_bulletPrefab) as GameObject;
-        //강사님은 그냥 obj.transform.position = m_firepos.transform.position;으로 하신듯.
-        //var script = obj.GetComponent<Projectile>();
-        //script.SetProjectile(m_firePos.transform.position);
-
-        //pool에서 총알을 하나꺼내서
         var bullet = m_bulletPool.Get();
-        //위치를 잡아주고
-        bullet.transform.position = m_firePos.transform.position;
-        //꺼져있는 Active를 켜주면 날아가게된다.
+        bullet.SetProjectile(m_firePos.transform.position);
         bullet.gameObject.SetActive(true);
     }
 
     void LoadCharacterSprite()
     {
         var sprites = Resources.LoadAll<Sprite>(string.Format("Heroes/sunny_{0:00}", PlayerDataManager.Instance.GetCurHero()));
-        m_partsRenderer[0].sprite = sprites[0];
-        m_partsRenderer[1].sprite = m_partsRenderer[2].sprite = sprites[1];
-    }
-
-    public void SetDie()
-    {
-        CancelInvoke("CreateBullet");
-        gameObject.SetActive(false);
+        m_partsRenderer[0].sprite = sprites[0]; //몸체
+        m_partsRenderer[1].sprite = m_partsRenderer[2].sprite = sprites[1]; //양 날개
     }
 
     void StartFire()
@@ -66,6 +55,14 @@ public class PlayerController : MonoBehaviour
     void StopFire()
     {
         CancelInvoke("CreateBullet");
+    }
+    #endregion
+
+    #region Public Methods
+    public void SetDie()
+    {
+        CancelInvoke("CreateBullet");
+        gameObject.SetActive(false);
     }
 
     public void RemoveBullet(ProjectileController bullet)
@@ -96,9 +93,12 @@ public class PlayerController : MonoBehaviour
         StartFire();
         m_animator.Play("fly");
     }
+    #endregion
 
+    #region Unity Methods
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        //방어구있을때처리
         if(collision.tag.Equals("Monster"))
         {
             if (GameManager.Instance.GetState() != GameManager.eGameState.Invincible)
@@ -116,11 +116,19 @@ public class PlayerController : MonoBehaviour
         //시작한뒤 3초뒤에 0.1초 간격으로 계속 총알을 발사시킴.
         InvokeRepeating("CreateBullet", 3f, 0.1f);
 
-        m_bulletPool = new GameObjectPool<ProjectileController>(20, () => 
+        m_bulletPool = new GameObjectPool<ProjectileController>(20, () =>
         {
             var obj = Instantiate(m_bulletPrefab) as GameObject;
             var bullet = obj.GetComponent<ProjectileController>();
-            
+
+            Item item = PlayerDataManager.Instance.GetCurEquipItem(Item.eItemClass.Weapon);
+
+            if (item != null)
+            {
+                bullet.gameObject.GetComponent<SpriteRenderer>().sprite = item.m_sprite;
+                bullet.SetPower(item.m_stat);
+            }
+
             return bullet; 
         });
 
@@ -190,4 +198,5 @@ public class PlayerController : MonoBehaviour
 
         }
     }
+    #endregion
 }

@@ -8,7 +8,7 @@ public class LobbyMenu_Shop : MonoBehaviour, ILobbyMenu
     public enum eItemType
     {
         Canon,
-        DualShot,
+        Missile,
         Cloak,
         ClothArmor,
         Necklace,

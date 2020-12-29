@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class ParticleAutoDestroy : MonoBehaviour
 {
-
-    //모든 파티클시스템을 가져와야함.
+    #region Field
     ParticleSystem[] m_particles;
     SfxController m_sfxController;
-    // Start is called before the first frame update
+    #endregion
+
+    #region Unity Methods
     void Start()
     {
         m_sfxController = GetComponent<SfxController>();
         m_particles = GetComponentsInChildren<ParticleSystem>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         bool isPlay = false;
@@ -36,4 +36,5 @@ public class ParticleAutoDestroy : MonoBehaviour
             SfxManager.Instance.RemoveSfx(m_sfxController);
         }
     }
+    #endregion
 }

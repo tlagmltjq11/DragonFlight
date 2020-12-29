@@ -5,27 +5,24 @@ using UnityEngine.SocialPlatforms.Impl;
 
 public class BgController : MonoBehaviour
 {
+    #region Field
     [SerializeField]
     float m_speed = 0.5f;
     float m_speedScale = 1f;
     SpriteRenderer m_bgRenderer;
+    #endregion
 
-    public void SetSpeedScale(float scale)
-    {
-        m_speedScale = scale;
-    }
-
+    #region Public Methods
     void Start()
     {
         m_bgRenderer = GetComponent<SpriteRenderer>();
-        
+
         if (SoundManager.Instance != null)
         {
             SoundManager.Instance.PlayBGM(SoundManager.eAudioBGMClip.BGM01);
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         //scale값을 키워서 배경속도를 컨트롤함.
@@ -33,5 +30,12 @@ public class BgController : MonoBehaviour
         if (ScoreManager.Instance != null)
             ScoreManager.Instance.SetFlightScore((int)(m_bgRenderer.material.mainTextureOffset.y * 1000f));
     }
+    #endregion
 
+    #region Public Methods
+    public void SetSpeedScale(float scale)
+    {
+        m_speedScale = scale;
+    }
+    #endregion
 }

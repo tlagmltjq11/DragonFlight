@@ -16,8 +16,24 @@ public class PlayerDataManager : DonDestroy<PlayerDataManager>
     #region Unity Methods
     protected override void OnAwake()
     {
-        PlayerPrefs.DeleteAll();
+        //PlayerPrefs.DeleteAll();
         LoadData();
+    }
+
+    private void Start()
+    {
+        //이전에 장착해두었던 Item들을 캐싱해둔다.
+        for (int i = 0; i < m_myData.m_curEquipItem.Length; i++)
+        {
+            int temp = GetCurEquipItemNums((Item.eItemClass)i);
+            //무엇인가 장착되어있다면
+            if (temp != -1)
+            {
+                string target = string.Format("Equipment/Equipment_{0:00}", temp + 1);
+                GameObject equips = Resources.Load<GameObject>(target);
+                m_myData.m_curEquipItem[i] = equips.GetComponent<Item>();
+            }
+        }
     }
     #endregion
 
@@ -96,25 +112,39 @@ public class PlayerDataManager : DonDestroy<PlayerDataManager>
         SaveData();
     }
 
+
     public int GetEquipmentsNums()
     {
         return EQUIPS;
     }
 
-    public int GetCurEquipItem(Item.eItemClass c)
+    public Item GetCurEquipItem(Item.eItemClass c)
     {
         return m_myData.m_curEquipItem[(int)c];
     }
 
-    public void SetCurEquipItem(Item.eItemClass c, int index)
+    public void SetCurEquipItem(Item.eItemClass c, LobbyMenu_Shop.eItemType t)
     {
-        m_myData.m_curEquipItem[(int)c] = index;
+        string target = string.Format("Equipment/Equipment_{0:00}", (int)t + 1);
+        GameObject equips = Resources.Load<GameObject>(target);
+
+        m_myData.m_curEquipItem[(int)c] = equips.GetComponent<Item>();
+    }
+
+    public int GetCurEquipItemNums(Item.eItemClass c)
+    {
+        return m_myData.m_curEquipItemNums[(int)c];
+    }
+
+    public void SetCurEquipItemNums(Item.eItemClass c, int index)
+    {
+        m_myData.m_curEquipItemNums[(int)c] = index;
         SaveData();
     }
 
     public bool IsEquippedItem(Item.eItemClass c, int index)
     {
-        if(m_myData.m_curEquipItem[(int)c] == index)
+        if(m_myData.m_curEquipItemNums[(int)c] == index)
         {
             return true;
         }
@@ -170,9 +200,9 @@ public class PlayerDataManager : DonDestroy<PlayerDataManager>
         PlayerPrefs.SetInt("BEST_SCORE", m_myData.m_bestScore);
         PlayerPrefs.SetInt("SELECT_HERO", m_myData.m_curSelectHero);
 
-        PlayerPrefs.SetInt("EQUIP_WEAPON", m_myData.m_curEquipItem[(int)Item.eItemClass.Weapon]);
-        PlayerPrefs.SetInt("EQUIP_ARMOR", m_myData.m_curEquipItem[(int)Item.eItemClass.Armor]);
-        PlayerPrefs.SetInt("EQUIP_ACC", m_myData.m_curEquipItem[(int)Item.eItemClass.Acc]);
+        PlayerPrefs.SetInt("EQUIP_WEAPON", m_myData.m_curEquipItemNums[(int)Item.eItemClass.Weapon]);
+        PlayerPrefs.SetInt("EQUIP_ARMOR", m_myData.m_curEquipItemNums[(int)Item.eItemClass.Armor]);
+        PlayerPrefs.SetInt("EQUIP_ACC", m_myData.m_curEquipItemNums[(int)Item.eItemClass.Acc]);
 
         var result = ArrayToString(m_myData.m_heroesSlot);
         PlayerPrefs.SetString("HEROES_SLOT", result);
@@ -191,9 +221,9 @@ public class PlayerDataManager : DonDestroy<PlayerDataManager>
         m_myData.m_bestScore = PlayerPrefs.GetInt("BEST_SCORE", 0);
         m_myData.m_curSelectHero = PlayerPrefs.GetInt("SELECT_HERO", 0);
 
-        m_myData.m_curEquipItem[(int)Item.eItemClass.Weapon] = PlayerPrefs.GetInt("EQUIP_WEAPON", -1);
-        m_myData.m_curEquipItem[(int)Item.eItemClass.Armor] = PlayerPrefs.GetInt("EQUIP_ARMOR", -1);
-        m_myData.m_curEquipItem[(int)Item.eItemClass.Acc] = PlayerPrefs.GetInt("EQUIP_ACC", -1);
+        m_myData.m_curEquipItemNums[(int)Item.eItemClass.Weapon] = PlayerPrefs.GetInt("EQUIP_WEAPON", -1);
+        m_myData.m_curEquipItemNums[(int)Item.eItemClass.Armor] = PlayerPrefs.GetInt("EQUIP_ARMOR", -1);
+        m_myData.m_curEquipItemNums[(int)Item.eItemClass.Acc] = PlayerPrefs.GetInt("EQUIP_ACC", -1);
 
         var result = PlayerPrefs.GetString("HEROES_SLOT", string.Empty);
         //save한적이 없을때 예외처리.

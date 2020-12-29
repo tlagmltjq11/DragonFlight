@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class MonsterController : MonoBehaviour
 {
+    #region Field
     [SerializeField]
     int m_hp;
     [SerializeField]
     public bool m_isAlive;
+
     public int LineNum { get; set; }
     Vector3 m_dir = Vector3.down;
     float m_speed = 4f;
@@ -19,9 +21,46 @@ public class MonsterController : MonoBehaviour
 
     //플레이어와의 방향을 알아야 아이템을 해당방향으로 떨어뜨리기 때문에 플레이어위치를 알아야함. 
     //대신 몬스터마다 계속해서 찾을바에 몬스터매니저에서 한번에 찾아서 보내주는것이 낫다.
-    //기존엔 몬스터 한마리를 생성할때마다 파인드를 해줘야하지만, 매니저에서 한번만 찾아서 넘겨주는게 낫다는것.
     PlayerController m_player;
+    #endregion
 
+    #region Unity Methods
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag.Equals("BgColliderBottom"))
+        {
+            MonsterManager.Instance.RemoveMonster(this);
+        }
+        if (collision.tag.Equals("Invincible"))
+        {
+            m_hp = 0;
+            SetDamage(0);
+        }
+        if (collision.tag.Equals("ShockWave"))
+        {
+            //아이템 생성없이 삭제 -> SetDie를 안불리게끔.
+            m_hp = 0;
+            m_isAlive = false;
+            MonsterManager.Instance.RemoveMonster(this);
+        }
+    }
+
+    // Start is called before the first frame update
+    void Awake()
+    {
+        m_sprRenderers = GetComponentsInChildren<SpriteRenderer>();
+        m_animator = GetComponent<Animator>();
+        gameObject.SetActive(false);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        transform.position += m_dir * m_speed * m_speedScale * Time.deltaTime;
+    }
+    #endregion
+
+    #region Public Methods
     public void InitMonster(PlayerController player)
     {
         m_player = player;
@@ -88,7 +127,9 @@ public class MonsterController : MonoBehaviour
 
         }
     }
+    #endregion
 
+    #region Private Methods
     void ChangeParts()
     {
         var parts = MonsterManager.Instance.GetMonsterParts(m_type);
@@ -97,38 +138,5 @@ public class MonsterController : MonoBehaviour
         m_sprRenderers[1].sprite = m_sprRenderers[2].sprite = parts[1];
         m_sprRenderers[3].sprite = m_sprRenderers[4].sprite = parts[3];
     }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.tag.Equals("BgColliderBottom"))
-        {
-            MonsterManager.Instance.RemoveMonster(this);
-        }
-        if(collision.tag.Equals("Invincible"))
-        {
-            m_hp = 0;
-            SetDamage(0);
-        }
-        if (collision.tag.Equals("ShockWave"))
-        {
-            //아이템 생성없이 삭제
-            m_hp = 0;
-            m_isAlive = false;
-            MonsterManager.Instance.RemoveMonster(this);
-        }
-    }
-
-    // Start is called before the first frame update
-    void Awake()
-    {
-        m_sprRenderers = GetComponentsInChildren<SpriteRenderer>();
-        m_animator = GetComponent<Animator>();
-        gameObject.SetActive(false);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        transform.position += m_dir * m_speed * m_speedScale * Time.deltaTime;
-    }
+    #endregion
 }

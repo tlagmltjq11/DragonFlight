@@ -31,6 +31,7 @@ public class Item : MonoBehaviour
     public bool m_isEquipped;
 
     public UISprite m_icon;
+    public Sprite m_sprite;
     #endregion
 
     #region Unity Methods

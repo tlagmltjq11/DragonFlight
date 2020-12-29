@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
+    #region Field
     public enum eGameState
     {
         Normal,
@@ -20,7 +21,9 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     GameObject m_gameUI;
     [SerializeField]
     GameResult m_resultUI;
+    #endregion
 
+    #region Public Methods
     public void SetPause()
     {
         if (Time.timeScale == 0)
@@ -72,14 +75,5 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                 break;
         }
     }
-    protected override void OnStart()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    #endregion
 }

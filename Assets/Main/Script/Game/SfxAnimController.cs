@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class SfxAnimController : MonoBehaviour
 {
+    #region Field
     Animation m_animation;
+    #endregion
 
-    // Start is called before the first frame update
+    #region Unity Methods
     void Start()
     {
         m_animation = GetComponent<Animation>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if(!m_animation.isPlaying)
@@ -20,4 +21,5 @@ public class SfxAnimController : MonoBehaviour
             gameObject.SetActive(false);
         }
     }
+    #endregion
 }
