@@ -7,12 +7,14 @@ public class LobbyMenu_Shop : MonoBehaviour, ILobbyMenu
     #region Field
     public enum eItemType
     {
-        Canon,
-        Missile,
-        Cloak,
-        ClothArmor,
-        Necklace,
-        Ring,
+        BlazeBullet,
+        WingBullet,
+        FireBullet,
+        DarkBullet,
+        HighShield,
+        LowShield,
+        WhiteWing,
+        YellowWing,
         Dummy1,
         Dummy2,
         Dummy3,
@@ -23,8 +25,6 @@ public class LobbyMenu_Shop : MonoBehaviour, ILobbyMenu
         Dummy8,
         Dummy9,
         Dummy10,
-        Dummy11,
-        Dummy12,
         Max
     }
 

@@ -21,6 +21,15 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     GameObject m_gameUI;
     [SerializeField]
     GameResult m_resultUI;
+    int m_gameSpeed;
+    #endregion
+
+    #region Unity Methods
+    private void Start()
+    {
+        m_gameSpeed = PlayerPrefs.GetInt("OPTION_SPEED", 1);
+        Time.timeScale = m_gameSpeed;
+    }
     #endregion
 
     #region Public Methods
@@ -29,7 +38,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         if (Time.timeScale == 0)
         {
             SoundManager.Instance.PlayBGM();
-            Time.timeScale = 1;
+            Time.timeScale = m_gameSpeed;
         }
         else
         {
@@ -70,6 +79,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                 m_player.SetDie();
                 m_bgController.SetSpeedScale(1f);
                 MonsterManager.Instance.StopCreateMonsters();
+                MeteoManager.Instance.StopCreateMeteo();
                 m_gameUI.SetActive(false);
                 m_resultUI.SetUI();
                 break;

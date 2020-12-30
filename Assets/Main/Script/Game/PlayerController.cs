@@ -90,6 +90,7 @@ public class PlayerController : MonoBehaviour
     public void ShieldOn()
     {
         Debug.Log("실드온");
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.Shield);
         m_sfxShieldObj.SetActive(true);
         StartCoroutine("Shield");
         m_canHit = false;
@@ -120,19 +121,22 @@ public class PlayerController : MonoBehaviour
     #region Unity Methods
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //방어구있을때처리
-        if(collision.tag.Equals("Monster") && m_canHit)
+        if (m_canHit)
         {
-            if (GameManager.Instance.GetState() != GameManager.eGameState.Invincible)
+            if (collision.tag.Equals("Monster") || collision.tag.Equals("Meteo"))
             {
-                if (m_armorChance == 0)
+                if (GameManager.Instance.GetState() != GameManager.eGameState.Invincible)
                 {
-                    GameManager.Instance.SetState(GameManager.eGameState.Result);
-                }
-                else
-                {
-                    BuffManager.Instance.SetBuff(BuffManager.eBuffType.Shield);
-                    m_armorChance--;
+                    if (m_armorChance == 0)
+                    {
+                        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.PlayerDie);
+                        GameManager.Instance.SetState(GameManager.eGameState.Result);
+                    }
+                    else
+                    {
+                        BuffManager.Instance.SetBuff(BuffManager.eBuffType.Shield);
+                        m_armorChance--;
+                    }
                 }
             }
         }

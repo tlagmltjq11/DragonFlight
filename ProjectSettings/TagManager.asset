@@ -12,6 +12,7 @@ TagManager:
   - ShockWave
   - Shop
   - Menu
+  - Meteo
   layers:
   - Default
   - TransparentFX

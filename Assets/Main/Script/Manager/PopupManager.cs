@@ -5,6 +5,7 @@ public delegate void PopupButtonDelegate();
 
 public class PopupManager : DonDestroy<PopupManager>
 {
+    #region Field
     [SerializeField]
     GameObject m_popupOkCancelPrefab; //동적로드 방식을 사용할 것임.
     [SerializeField]
@@ -16,6 +17,19 @@ public class PopupManager : DonDestroy<PopupManager>
     int m_depthGap = 10;
 
     List<GameObject> m_popupList = new List<GameObject>();
+    #endregion
+
+    #region Unity Methods
+    protected override void OnStart()
+    {
+        m_popupOkCancelPrefab = Resources.Load("Popup/PopupOkCancel") as GameObject;
+        m_popupOkPrefab = Resources.Load("Popup/PopupOk") as GameObject;
+        m_popupOptionPrefab = Resources.Load("Popup/PopupOption") as GameObject;
+        base.OnStart();
+    }
+    #endregion
+
+    #region Public Methods
     public void OpenPopupOkCancel(string subject, string body, PopupButtonDelegate okBtnDel, PopupButtonDelegate cancelBtnDel, string okBtnStr = "OK", string cancelBtnStr = "Cancel")
     {
         var obj = Instantiate(m_popupOkCancelPrefab) as GameObject;
@@ -116,12 +130,5 @@ public class PopupManager : DonDestroy<PopupManager>
         }
         return false;
     }
-
-    protected override void OnStart()
-    {
-        m_popupOkCancelPrefab = Resources.Load("Popup/PopupOkCancel") as GameObject;
-        m_popupOkPrefab = Resources.Load("Popup/PopupOk") as GameObject;
-        m_popupOptionPrefab = Resources.Load("Popup/PopupOption") as GameObject;
-        base.OnStart();
-    }
+    #endregion
 }

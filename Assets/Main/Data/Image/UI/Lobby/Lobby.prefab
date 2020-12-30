@@ -45,35 +45,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: 64c8e6c2a84224a4e9b22009fec53dd0, type: 2}
   mSprites:
-  - name: 1
-    x: 0
-    y: 1254
-    width: 220
-    height: 183
-    borderLeft: 0
-    borderRight: 0
-    borderTop: 0
-    borderBottom: 0
-    paddingLeft: 15
-    paddingRight: 21
-    paddingTop: 32
-    paddingBottom: 41
-  - name: 2
-    x: 701
-    y: 1477
-    width: 211
-    height: 211
-    borderLeft: 0
-    borderRight: 0
-    borderTop: 0
-    borderBottom: 0
-    paddingLeft: 32
-    paddingRight: 13
-    paddingTop: 23
-    paddingBottom: 22
   - name: back
-    x: 918
-    y: 1338
+    x: 0
+    y: 921
     width: 99
     height: 99
     borderLeft: 2
@@ -97,21 +71,34 @@ MonoBehaviour:
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
-  - name: BombLitSprite
-    x: 634
-    y: 1021
-    width: 69
-    height: 104
+  - name: blaze_02_green 1
+    x: 541
+    y: 1441
+    width: 224
+    height: 247
     borderLeft: 0
     borderRight: 0
     borderTop: 0
     borderBottom: 0
-    paddingLeft: 26
-    paddingRight: 33
-    paddingTop: 5
-    paddingBottom: 19
+    paddingLeft: 11
+    paddingRight: 21
+    paddingTop: 9
+    paddingBottom: 0
+  - name: bless_wing 1
+    x: 0
+    y: 1133
+    width: 115
+    height: 256
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
   - name: btn_crystal
-    x: 662
+    x: 846
     y: 1689
     width: 43
     height: 80
@@ -124,7 +111,7 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_large
-    x: 355
+    x: 539
     y: 1722
     width: 148
     height: 147
@@ -136,9 +123,22 @@ MonoBehaviour:
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
+  - name: bullet_14_08
+    x: 451
+    y: 1139
+    width: 122
+    height: 121
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 3
+    paddingRight: 3
+    paddingTop: 6
+    paddingBottom: 1
   - name: checkbox_v
-    x: 918
-    y: 1281
+    x: 832
+    y: 1395
     width: 64
     height: 56
     borderLeft: 0
@@ -150,8 +150,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: dot
-    x: 61
-    y: 1005
+    x: 100
+    y: 1012
     width: 584
     height: 8
     borderLeft: 0
@@ -163,8 +163,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: gem
-    x: 872
-    y: 1723
+    x: 957
+    y: 1694
     width: 43
     height: 46
     borderLeft: 0
@@ -175,9 +175,48 @@ MonoBehaviour:
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
-  - name: icon_17
+  - name: god_15_fire 1
     x: 0
-    y: 1126
+    y: 1390
+    width: 276
+    height: 298
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 21
+    paddingRight: 21
+    paddingTop: 10
+    paddingBottom: 10
+  - name: hatchling_shield_05
+    x: 355
+    y: 1699
+    width: 183
+    height: 170
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
+  - name: hatchling_shield_06
+    x: 277
+    y: 1465
+    width: 263
+    height: 223
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 0
+    paddingRight: 1
+    paddingTop: 0
+    paddingBottom: 0
+  - name: icon_17
+    x: 322
+    y: 1133
     width: 127
     height: 127
     borderLeft: 0
@@ -189,8 +228,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: icon_clan
-    x: 221
-    y: 1329
+    x: 116
+    y: 1181
     width: 180
     height: 108
     borderLeft: 0
@@ -202,8 +241,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: icon_ruby_store
-    x: 916
-    y: 1769
+    x: 896
+    y: 1032
     width: 100
     height: 100
     borderLeft: 0
@@ -215,8 +254,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: invincible_02
-    x: 0
-    y: 893
+    x: 932
+    y: 1157
     width: 60
     height: 120
     borderLeft: 0
@@ -229,7 +268,7 @@ MonoBehaviour:
     paddingBottom: 1
   - name: invincible_03
     x: 0
-    y: 772
+    y: 402
     width: 60
     height: 120
     borderLeft: 0
@@ -240,22 +279,9 @@ MonoBehaviour:
     paddingRight: 2
     paddingTop: 7
     paddingBottom: 1
-  - name: item_bomb
-    x: 789
-    y: 1309
-    width: 128
-    height: 128
-    borderLeft: 0
-    borderRight: 0
-    borderTop: 0
-    borderBottom: 0
-    paddingLeft: 0
-    paddingRight: 0
-    paddingTop: 0
-    paddingBottom: 0
   - name: item_break
-    x: 402
-    y: 1309
+    x: 894
+    y: 1741
     width: 128
     height: 128
     borderLeft: 0
@@ -267,8 +293,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: item_coin
-    x: 221
-    y: 1264
+    x: 932
+    y: 1325
     width: 64
     height: 64
     borderLeft: 0
@@ -280,8 +306,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: item_formation
-    x: 531
-    y: 1309
+    x: 322
+    y: 1261
     width: 128
     height: 128
     borderLeft: 0
@@ -293,8 +319,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: item_gem
-    x: 660
-    y: 1309
+    x: 451
+    y: 1261
     width: 128
     height: 128
     borderLeft: 0
@@ -305,35 +331,9 @@ MonoBehaviour:
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
-  - name: Missile
-    x: 996
-    y: 2000
-    width: 18
-    height: 48
-    borderLeft: 0
-    borderRight: 0
-    borderTop: 0
-    borderBottom: 0
-    paddingLeft: 0
-    paddingRight: 0
-    paddingTop: 0
-    paddingBottom: 0
-  - name: necklace
-    x: 484
-    y: 1456
-    width: 216
-    height: 232
-    borderLeft: 0
-    borderRight: 0
-    borderTop: 0
-    borderBottom: 0
-    paddingLeft: 40
-    paddingRight: 0
-    paddingTop: 0
-    paddingBottom: 24
   - name: no
-    x: 536
-    y: 1026
+    x: 0
+    y: 621
     width: 97
     height: 99
     borderLeft: 0
@@ -345,7 +345,7 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: notice_image_14
-    x: 257
+    x: 766
     y: 1452
     width: 226
     height: 236
@@ -358,8 +358,8 @@ MonoBehaviour:
     paddingTop: 12
     paddingBottom: 8
   - name: option_1x
-    x: 791
-    y: 1705
+    x: 358
+    y: 1400
     width: 80
     height: 64
     borderLeft: 0
@@ -371,8 +371,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: option_2x
-    x: 581
-    y: 1705
+    x: 277
+    y: 1400
     width: 80
     height: 64
     borderLeft: 0
@@ -384,7 +384,7 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: option_3x
-    x: 710
+    x: 765
     y: 1705
     width: 80
     height: 64
@@ -397,8 +397,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: option_music
-    x: 286
-    y: 1270
+    x: 766
+    y: 1393
     width: 65
     height: 58
     borderLeft: 0
@@ -410,8 +410,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: option_sound
-    x: 916
-    y: 1701
+    x: 439
+    y: 1397
     width: 71
     height: 67
     borderLeft: 0
@@ -423,8 +423,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: paper_round
-    x: 710
-    y: 1770
+    x: 116
+    y: 1290
     width: 205
     height: 99
     borderLeft: 60
@@ -436,7 +436,7 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: paper_round_checkbox
-    x: 504
+    x: 688
     y: 1770
     width: 205
     height: 99
@@ -449,7 +449,7 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: push
-    x: 504
+    x: 688
     y: 1693
     width: 76
     height: 76
@@ -461,21 +461,21 @@ MonoBehaviour:
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
-  - name: rings
-    x: 0
-    y: 1438
-    width: 256
-    height: 250
+  - name: pvp_bullet_05_45
+    x: 580
+    y: 1277
+    width: 127
+    height: 112
     borderLeft: 0
     borderRight: 0
     borderTop: 0
     borderBottom: 0
-    paddingLeft: 0
+    paddingLeft: 1
     paddingRight: 0
-    paddingTop: 6
-    paddingBottom: 0
+    paddingTop: 3
+    paddingBottom: 13
   - name: scrollbar_base
-    x: 355
+    x: 539
     y: 1699
     width: 76
     height: 22
@@ -488,8 +488,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: select_character_01
-    x: 0
-    y: 1014
+    x: 448
+    y: 1021
     width: 111
     height: 111
     borderLeft: 0
@@ -501,8 +501,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: select_character_02
-    x: 112
-    y: 1014
+    x: 560
+    y: 1021
     width: 111
     height: 111
     borderLeft: 0
@@ -514,8 +514,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: select_character_03
-    x: 224
-    y: 1014
+    x: 672
+    y: 1021
     width: 111
     height: 111
     borderLeft: 0
@@ -527,8 +527,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: select_character_04
-    x: 913
-    y: 1577
+    x: 784
+    y: 1021
     width: 111
     height: 111
     borderLeft: 0
@@ -540,8 +540,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: select_character_05
-    x: 912
-    y: 1142
+    x: 336
+    y: 1021
     width: 111
     height: 111
     borderLeft: 0
@@ -553,8 +553,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: select_character_06
-    x: 913
-    y: 1465
+    x: 580
+    y: 1165
     width: 111
     height: 111
     borderLeft: 0
@@ -566,8 +566,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: select_character_07
-    x: 128
-    y: 1142
+    x: 708
+    y: 1278
     width: 111
     height: 111
     borderLeft: 0
@@ -579,8 +579,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: select_character_08
-    x: 240
-    y: 1142
+    x: 708
+    y: 1166
     width: 111
     height: 111
     borderLeft: 0
@@ -592,8 +592,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: select_character_09
-    x: 352
-    y: 1142
+    x: 820
+    y: 1278
     width: 111
     height: 111
     borderLeft: 0
@@ -605,8 +605,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: select_character_10
-    x: 464
-    y: 1142
+    x: 820
+    y: 1166
     width: 111
     height: 111
     borderLeft: 0
@@ -618,8 +618,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: select_character_11
-    x: 800
-    y: 1142
+    x: 224
+    y: 1021
     width: 111
     height: 111
     borderLeft: 0
@@ -631,8 +631,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: select_character_12
-    x: 576
-    y: 1142
+    x: 0
+    y: 1021
     width: 111
     height: 111
     borderLeft: 0
@@ -644,8 +644,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: select_character_13
-    x: 688
-    y: 1142
+    x: 112
+    y: 1021
     width: 111
     height: 111
     borderLeft: 0
@@ -657,8 +657,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: select_ok
-    x: 402
-    y: 1262
+    x: 894
+    y: 1694
     width: 62
     height: 46
     borderLeft: 0
@@ -669,9 +669,22 @@ MonoBehaviour:
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
+  - name: start_wing 1
+    x: 0
+    y: 523
+    width: 97
+    height: 97
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 1
+    paddingRight: 2
+    paddingTop: 0
+    paddingBottom: 3
   - name: title_icon_03
-    x: 336
-    y: 1026
+    x: 0
+    y: 821
     width: 99
     height: 99
     borderLeft: 0
@@ -683,8 +696,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: title_icon_09
-    x: 436
-    y: 1026
+    x: 0
+    y: 721
     width: 99
     height: 99
     borderLeft: 0

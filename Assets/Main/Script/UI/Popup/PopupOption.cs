@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PopupOption : MonoBehaviour
 {
+    #region Field
     //모든 트윈은 아래로 받아오기 가능.
     [SerializeField]
     UITweener m_popupTween;
@@ -18,7 +19,23 @@ public class PopupOption : MonoBehaviour
     UISprite m_speedIcon;
 
     int m_curSpeed;
+    #endregion
 
+    #region Unity Methods
+    void Start()
+    {
+        var onBGM = PlayerPrefs.GetInt("OPTION_BGM", 1) == 1 ? false : true;
+        var onSFX = PlayerPrefs.GetInt("OPTION_SFX", 1) == 1 ? false : true;
+        m_curSpeed = PlayerPrefs.GetInt("OPTION_SPEED", 1);
+
+        m_speedIcon.spriteName = string.Format("option_{0}x", m_curSpeed);
+
+        m_bgmToggle.value = !onBGM;
+        m_sfxToggle.value = !onSFX;
+    }
+    #endregion
+
+    #region Public Methods
     //파라메터로 안주면 ok, cancel값으로 들어간다는 의미. 또한 생략할 수 있게끔 맨뒤에 위치시켜야 한다.
     public void SetPopup(PopupButtonDelegate okBtnDel)
     {
@@ -29,6 +46,8 @@ public class PopupOption : MonoBehaviour
 
     public void SetBGM()
     {
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+
         var isOn = m_bgmToggle.value;
         SoundManager.Instance.MuteBGM(!isOn);
 
@@ -57,13 +76,15 @@ public class PopupOption : MonoBehaviour
 
     public void SetSpeed()
     {
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+
         m_curSpeed++;
-        if(m_curSpeed > 2)
+        if(m_curSpeed > 3)
         {
-            m_curSpeed = 0;
+            m_curSpeed = 1;
         }
 
-        m_speedIcon.spriteName = string.Format("option_{0}x", m_curSpeed + 1);
+        m_speedIcon.spriteName = string.Format("option_{0}x", m_curSpeed);
 
         PlayerPrefs.SetInt("OPTION_SPEED", m_curSpeed);
         PlayerPrefs.Save();
@@ -73,31 +94,6 @@ public class PopupOption : MonoBehaviour
     {
         m_okBtnDel();
         PopupManager.Instance.ClosePopup();
-
-        /*
-                if (m_okBtnDel != null)
-        {
-            m_okBtnDel();
-        }
-        else
-        {
-            PopupManager.Instance.ClosePopup();
-        }*/
     }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        var onBGM = PlayerPrefs.GetInt("OPTION_BGM", 1) == 1 ? false : true;
-        var onSFX = PlayerPrefs.GetInt("OPTION_SFX", 1) == 1 ? false : true;
-
-        m_bgmToggle.value = !onBGM;
-        m_sfxToggle.value = !onSFX;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    #endregion
 }
