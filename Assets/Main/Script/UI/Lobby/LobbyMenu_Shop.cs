@@ -67,9 +67,6 @@ public class LobbyMenu_Shop : MonoBehaviour, ILobbyMenu
 
     #endregion
 
-    #region Unity Methods
-    #endregion
-
     #region Public Methods
     public eLobbyMenuType m_type { get { return eLobbyMenuType.Shop; } }
 

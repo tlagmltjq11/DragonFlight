@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
     Animator m_animator;
     bool m_isDrag;
     Vector3 m_startPos;
+    Vector3 m_movePos;
 
     Item m_armor = null;
     int m_armorChance = 0;
@@ -34,11 +35,6 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Private Methods
-    void KeyProcess()
-    {
-        m_dir.x = Input.GetAxis("Horizontal");
-    }
-
     void CreateBullet()
     {
         var bullet = m_bulletPool.Get();
@@ -89,7 +85,6 @@ public class PlayerController : MonoBehaviour
 
     public void ShieldOn()
     {
-        Debug.Log("실드온");
         SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.Shield);
         m_sfxShieldObj.SetActive(true);
         StartCoroutine("Shield");
@@ -98,9 +93,7 @@ public class PlayerController : MonoBehaviour
 
     public void ShieldOff()
     {
-        Debug.Log("실드오프");
         m_sfxShieldObj.SetActive(false);
-        //StopCoroutine("Shield"); //굳이없어도될듯.
         m_canHit = true;
     }
 
@@ -188,6 +181,57 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+#if UNITY_ANDROID || UNITY_IOS
+        if (Input.touchCount > 0)
+                {
+                    if (Input.GetTouch(0).phase == TouchPhase.Began)
+                    {
+                        m_startPos = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
+                    }
+            
+                    if(Input.GetTouch(0).phase == TouchPhase.Moved)
+                    {
+                        m_movePos = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
+                        var dir = m_movePos - m_startPos;
+
+                        m_dir = new Vector3(dir.x, 0, 0).normalized;
+
+                        if (m_dir != Vector3.zero)
+                        {
+                            m_moveScale = Mathf.Abs(dir.x);
+                            float checkMove = m_moveScale;
+                            var amount = m_collider.bounds.size.x / 2;
+
+                            if (m_moveScale < amount)
+                            {
+                                checkMove = amount;
+                            }
+
+                            var hitInfo = Physics2D.Raycast(transform.position, m_dir, checkMove, 1 << LayerMask.NameToLayer("Collider"));
+
+                            //충돌했다면
+                            if (hitInfo.collider != null)
+                            {
+                                checkMove = hitInfo.distance - amount;
+                            }
+                            else
+                            {
+                                checkMove = m_moveScale;
+                            }
+
+                            transform.position += m_dir * checkMove;
+                        }
+
+                        m_startPos = m_movePos;
+                    }
+            
+                    if(Input.GetTouch(0).phase == TouchPhase.Ended)
+                    {
+                        m_startPos = Vector3.zero;
+                        m_movePos = Vector3.zero;
+                    }
+                }
+#elif UNITY_STANDALONE || UNITY_EDITOR
         if (Input.GetMouseButtonDown(0))
         {
             m_isDrag = true;
@@ -204,9 +248,6 @@ public class PlayerController : MonoBehaviour
             //바로 마우스가 어디로갔는지 체크한다.
             var movePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             var dir = movePos - m_startPos;
-
-
-            //KeyProcess();
 
             m_dir = new Vector3(dir.x, 0, 0).normalized;
 
@@ -241,6 +282,7 @@ public class PlayerController : MonoBehaviour
             m_startPos = movePos;
 
         }
+#endif
     }
     #endregion
 

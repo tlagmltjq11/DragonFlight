@@ -21,7 +21,6 @@ public class BgController : MonoBehaviour
         m_bgRenderer = GetComponent<SpriteRenderer>();
 
         int rand = Random.Range(0, m_bgs.Length);
-        Debug.Log(rand);
         m_bgRenderer.sprite = m_bgs[rand];
 
         if (SoundManager.Instance != null)

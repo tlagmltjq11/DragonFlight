@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PopupOk : MonoBehaviour
 {
+    #region Field
     [SerializeField]
     UILabel m_subjectLabel;
     [SerializeField]
@@ -16,8 +17,9 @@ public class PopupOk : MonoBehaviour
     UITweener m_popupTween;
 
     PopupButtonDelegate m_okBtnDel;
+    #endregion
 
-
+    #region Public Methods
     //파라메터로 안주면 ok, cancel값으로 들어간다는 의미. 또한 생략할 수 있게끔 맨뒤에 위치시켜야 한다.
     public void SetPopup(string subject, string body, PopupButtonDelegate okBtnDel, string okBtnText = "OK")
     {
@@ -35,28 +37,6 @@ public class PopupOk : MonoBehaviour
 
         m_okBtnDel();
         PopupManager.Instance.ClosePopup();
-
-        /*
-        if (m_okBtnDel != null)
-        {
-            m_okBtnDel();
-        }
-        else
-        {
-            PopupManager.Instance.ClosePopup();
-        }
-        */
     }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    #endregion
 }

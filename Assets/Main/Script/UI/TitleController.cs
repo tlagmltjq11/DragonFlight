@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEditor;
 
 public class TitleController : MonoBehaviour
 {
+    #region Field
     [SerializeField]
     GameObject m_bgObj;
     [SerializeField]
@@ -14,10 +17,32 @@ public class TitleController : MonoBehaviour
     UIEventTrigger m_eventTrigger;
     [SerializeField]
     GameObject m_CI;
+    GameObject m_popup;
+    #endregion
+
+    #region Public Methods
+    public void OnBackClick()
+    {
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+
+        PopupManager.Instance.OpenPopupOkCancel("[0000FF]Notice[-]", "게임을 종료하시겠습니까?", () => {
+#if UNITY_EDITOR
+            SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+            EditorApplication.isPlaying = false;
+#else
+                                SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+                                Application.Quit();
+#endif
+        }, () => { SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); }, "예", "아니오");
+
+    }
 
     public void GoNextScene()
     {
-        LoadSceneManager.Instance.LoadSceneAsync(LoadSceneManager.eSceneState.Lobby);
+        if (m_popup.transform.childCount == 0)
+        {
+            LoadSceneManager.Instance.LoadSceneAsync(LoadSceneManager.eSceneState.Lobby);
+        }
     }
 
     public void SetTitle()
@@ -27,17 +52,18 @@ public class TitleController : MonoBehaviour
         m_CI.SetActive(false);
         LoadSceneManager.Instance.SetState(LoadSceneManager.eSceneState.Title);
 
-#if UNITY_ASDROID || UNITY_IOS
+        //추후 수정.
+#if UNITY_ANDROID || UNITY_IOS
         m_startInfo.text = "Touch to start!";
         m_eventTrigger.enabled = true;
-#elif UNITY_STANDALONE
-        m_startInfo.text = "Press any key to start!";
-        m_eventTrigger.enabled = false;
+#elif UNITY_STANDALONE || UNITY_EDITOR
+        m_startInfo.text = "Touch to start!";
+        m_eventTrigger.enabled = true;
 #endif
     }
+    #endregion
 
-
-    // Start is called before the first frame update
+    #region Unity Methods
     void Start()
     {
         m_bgObj.SetActive(false);
@@ -48,19 +74,8 @@ public class TitleController : MonoBehaviour
         {
             SetTitle();
         }
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-#if UNITY_STANDALONE
-        if (Input.anyKeyDown && !Input.GetKeyDown(KeyCode.Escape) && LoadSceneManager.Instance.GetState() == LoadSceneManager.eSceneState.Title)
-        {
-            if(GameObject.Find("PopupManager").transform.childCount == 0)
-            {
-                GoNextScene();
-            }
-        }
-#endif
+        m_popup = GameObject.Find("PopupManager");
     }
+    #endregion
 }

@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class BuffManager : SingletonMonoBehaviour<BuffManager>
 {
     #region Field
-    public enum eBuffType
+    public enum eBuffType //버프타입
     {
         PowerShot,
         Invincible,
@@ -14,16 +15,11 @@ public class BuffManager : SingletonMonoBehaviour<BuffManager>
         Max
     }
 
-    public class Buff
-    {
-        public float m_lifeTime;
-        public eBuffType m_buffType;
-    }
+    Dictionary<eBuffType, float> m_buffList = new Dictionary<eBuffType, float>(); //각 버프마다 지속시간 체크
+    float[] durations = new float[] { 10f, 2.55f, 5f, 3f };//각 버프별 지속시간
+    CameraShake m_camShake;
 
     PlayerController m_player;
-    Dictionary<eBuffType, Buff> m_buffList = new Dictionary<eBuffType, Buff>();
-    float[] durations = new float[] { 10f, 2.55f, 5f, 3f };
-    CameraShake m_camShake;
     #endregion
 
     #region Unity Methods
@@ -31,35 +27,43 @@ public class BuffManager : SingletonMonoBehaviour<BuffManager>
     {
         m_camShake = Camera.main.GetComponent<CameraShake>();
         m_player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+
+        for(int i=0; i< (int)eBuffType.Max; i++)
+        {
+            m_buffList.Add((eBuffType)i, 0);
+        }
     }
 
     void Update()
     {
-        //딕셔너리는 foreach가 훨씬 편함. for문으로 하면 아래처럼됨.
-        for (int i = 0; i < m_buffList.Count; i++)
+        foreach (var kvp in m_buffList.ToList())
         {
-            var data = m_buffList.GetEnumerator();
-            data.MoveNext();
-            var valuePair = data.Current;
-            var buff = m_buffList[valuePair.Key];
-            buff.m_lifeTime -= Time.deltaTime;
-
-            if (buff.m_lifeTime <= 0)
+            if (kvp.Value != 0)
             {
-                switch (buff.m_buffType)
+                float newLen = kvp.Value - Time.deltaTime;
+
+                if (newLen > 0f)
                 {
-                    case eBuffType.Magnet:
-                        m_player.SetMagnet(false);
-                        break;
-                    case eBuffType.Invincible:
-                        GameManager.Instance.SetState(GameManager.eGameState.Normal);
-                        m_player.SetShockWave(true);
-                        break;
-                    case eBuffType.Shield:
-                        m_player.ShieldOff();
-                        break;
+                    m_buffList[kvp.Key] = newLen;
                 }
-                m_buffList.Remove(buff.m_buffType);
+                else
+                {
+                    m_buffList[kvp.Key] = 0f;
+
+                    switch (kvp.Key)
+                    {
+                        case eBuffType.Magnet:
+                            m_player.SetMagnet(false);
+                            break;
+                        case eBuffType.Invincible:
+                            GameManager.Instance.SetState(GameManager.eGameState.Normal);
+                            m_player.SetShockWave(true);
+                            break;
+                        case eBuffType.Shield:
+                            m_player.ShieldOff();
+                            break;
+                    }
+                }
             }
         }
     }
@@ -73,11 +77,10 @@ public class BuffManager : SingletonMonoBehaviour<BuffManager>
             m_camShake.ShakeCamera();
         }
 
-        
-        if (!m_buffList.ContainsKey(buff))
+        if (m_buffList[buff] == 0f)
         {
-            m_buffList.Add(buff, new Buff() { m_lifeTime = durations[(int)buff], m_buffType = buff });
-            switch(buff)
+            m_buffList[buff] = durations[(int)buff]; //버프시간 갱신으로 추가해줌.
+            switch (buff)
             {
                 case eBuffType.Magnet:
                     m_player.SetMagnet(true);
@@ -92,9 +95,7 @@ public class BuffManager : SingletonMonoBehaviour<BuffManager>
         }
         else
         {
-            var findBuff = m_buffList[buff];
-            //똑같은 버프는 중복이아니라 시간리셋으로 구현하는게 맞음.
-            findBuff.m_lifeTime = durations[(int)buff];
+            m_buffList[buff] = durations[(int)buff]; //시간리셋
         }
     }
     #endregion

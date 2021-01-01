@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
 public class SoundManager : DonDestroy<SoundManager>
 {
@@ -46,8 +45,8 @@ public class SoundManager : DonDestroy<SoundManager>
 
     //2개짜리 객체리스트를 생성
     AudioSource[] m_audio = new AudioSource[(int)eAudioType.Max];
-    //동시재생에 제한을 두기 위한 딕셔너리
-    Dictionary<float, float> m_limitDict = new Dictionary<float, float>();
+    //동시재생에 제한을 두기 위한 List
+    List<float> m_limitList = new List<float>();
     #endregion
 
     #region Unity Methods
@@ -65,30 +64,23 @@ public class SoundManager : DonDestroy<SoundManager>
 
         MuteBGM(PlayerPrefs.GetInt("OPTION_BGM", 1) == 1 ? false : true);
         MuteSFX(PlayerPrefs.GetInt("OPTION_SFX", 1) == 1 ? false : true);
-
-        for(int i=0; i<m_sfxClip.Length; i++)
-        {
-            m_limitDict.Add(m_sfxClip[i].length, m_sfxClip[i].length);
-        }
     }
 
     private void Update()
     {
-        foreach (var kvp in m_limitDict.ToList())
+        //더블버퍼를 통해 반복문내 List의 Remove를 통한 Count에러를 차단함.
+        List<float> newList = new List<float>();
+
+        for (int i=0; i<m_limitList.Count; i++)
         {
-            if (kvp.Value != 0)
+            float newLen = m_limitList[i] - Time.deltaTime;
+            if(newLen > 0.0f)
             {
-                float newLen = kvp.Value - Time.deltaTime;
-                if (newLen > 0f)
-                {
-                   m_limitDict[kvp.Key] = newLen;
-                }
-                else
-                {
-                    m_limitDict[kvp.Key] = 0f;
-                }
+                newList.Add(newLen);
             }
         }
+
+        m_limitList = newList;
     }
     #endregion
 
@@ -115,11 +107,11 @@ public class SoundManager : DonDestroy<SoundManager>
 
     public void PlaySfx(eAudioSFXClip clip)
     {
-        if(m_limitDict[m_sfxClip[(int)clip].length] == 0f)
+        if(!m_limitList.Contains(m_sfxClip[(int)clip].length))
         {
-            m_limitDict[m_sfxClip[(int)clip].length] = m_sfxClip[(int)clip].length;
+            m_limitList.Add(m_sfxClip[(int)clip].length);
             m_audio[(int)eAudioType.SFX].PlayOneShot(m_sfxClip[(int)clip]);
-        }
+        }  
     }
 
     public void PlayBGM(eAudioBGMClip clip, float volume)

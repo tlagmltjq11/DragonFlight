@@ -33,6 +33,11 @@ public class GameResult : MonoBehaviour
     #endregion
 
     #region Public Methods
+    public void OKButtonClick()
+    {
+        LoadSceneManager.Instance.LoadSceneAsync(LoadSceneManager.eSceneState.Lobby);
+    }
+
     public void SetUI()
     {
         gameObject.SetActive(true);

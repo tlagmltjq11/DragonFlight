@@ -50,6 +50,17 @@ public class LobbyController : MonoBehaviour
     #endregion
 
     #region Public Methods
+    public void OnBackClick()
+    {
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+
+        PopupManager.Instance.OpenPopupOkCancel("[0000FF]Notice[-]", "타이틀 화면으로 돌아가시겠습니까?", () => {
+            SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+            LoadSceneManager.Instance.LoadSceneAsync(LoadSceneManager.eSceneState.Title);
+            PopupManager.Instance.ClosePopup();
+        }, () => { SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); }, "예", "아니오");
+    }
+
     public void StartGame()
     {
         SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);

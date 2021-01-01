@@ -45,9 +45,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: 61c763a77f2f288479dec835a50993ca, type: 2}
   mSprites:
-  - name: logo_01
+  - name: logo
     x: 0
-    y: 100
+    y: 223
+    width: 483
+    height: 289
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
+  - name: logo_01
+    x: 484
+    y: 426
     width: 244
     height: 86
     borderLeft: 0
@@ -60,7 +73,7 @@ MonoBehaviour:
     paddingBottom: 0
   - name: logo_02
     x: 0
-    y: 187
+    y: 75
     width: 288
     height: 86
     borderLeft: 0
@@ -72,8 +85,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: logo_03
-    x: 734
-    y: 223
+    x: 484
+    y: 136
     width: 212
     height: 289
     borderLeft: 0
@@ -85,8 +98,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: logo_04
-    x: 289
-    y: 213
+    x: 0
+    y: 162
     width: 385
     height: 60
     borderLeft: 0
@@ -99,22 +112,9 @@ MonoBehaviour:
     paddingBottom: 0
   - name: logo_for_kakao
     x: 0
-    y: 60
+    y: 35
     width: 135
     height: 39
-    borderLeft: 0
-    borderRight: 0
-    borderTop: 0
-    borderBottom: 0
-    paddingLeft: 0
-    paddingRight: 0
-    paddingTop: 0
-    paddingBottom: 0
-  - name: sbs_game_academy_ci
-    x: 0
-    y: 274
-    width: 733
-    height: 238
     borderLeft: 0
     borderRight: 0
     borderTop: 0

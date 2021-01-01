@@ -6,6 +6,7 @@ using UnityEngine;
 //또한 start나 update를 쓸일이 없어서 모노비헤이비어를 상속안시킴
 public class GameObjectPool<T>  where T : class
 {
+    #region Field
     //몇개를 만들것인가
     int m_count;
 
@@ -15,7 +16,9 @@ public class GameObjectPool<T>  where T : class
     Queue<T> m_objectPool;
 
     public int Count { get { return m_objectPool.Count; } }
+    #endregion
 
+    #region Public Methods
     public GameObjectPool(int count, Func createFunc)
     {
         m_count = count;
@@ -64,4 +67,5 @@ public class GameObjectPool<T>  where T : class
     {
         m_objectPool.Enqueue(item);
     }
+    #endregion
 }

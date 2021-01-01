@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerData
 {
+    #region Field
     public int m_bestScore;
     public int m_goldOwned;
     public int m_gemOwned;
@@ -12,7 +13,9 @@ public class PlayerData
     public bool[] m_ownendItems;
     public int[] m_curEquipItemNums;
     public Item[] m_curEquipItem;
+    #endregion
 
+    #region Public Methods
     public PlayerData(int heroes, int items)
     {
         m_heroesSlot = new bool[heroes];
@@ -27,4 +30,5 @@ public class PlayerData
             m_curEquipItemNums[i] = -1; //아무것도 장비하지 않은 상태
         }
     }
+    #endregion
 }

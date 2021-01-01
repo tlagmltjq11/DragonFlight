@@ -81,6 +81,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
                 MonsterManager.Instance.StopCreateMonsters();
                 MeteoManager.Instance.StopCreateMeteo();
                 m_gameUI.SetActive(false);
+                SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.Result);
                 m_resultUI.SetUI();
                 break;
         }

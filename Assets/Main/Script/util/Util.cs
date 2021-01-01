@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Util : MonoBehaviour
 {
+    #region Public Methods
     public static EventDelegate.Parameter MakeParameter(UnityEngine.Object _value, System.Type _type)
     {
         EventDelegate.Parameter param = new EventDelegate.Parameter();
@@ -36,12 +37,12 @@ public class Util : MonoBehaviour
     {
         int sum = 0;
         int num = 0;
-        if(table == null || table.Length <= 0)
+        if (table == null || table.Length <= 0)
         {
             return -1;
         }
 
-        for(int i=0; i<table.Length; i++)
+        for (int i = 0; i < table.Length; i++)
         {
             sum += table[i];
         }
@@ -49,9 +50,9 @@ public class Util : MonoBehaviour
         num = UnityEngine.Random.Range(1, sum + 1);
 
         sum = 0;
-        for(int i=0; i<table.Length; i++)
+        for (int i = 0; i < table.Length; i++)
         {
-            if(num > sum && num <= sum + table[i])
+            if (num > sum && num <= sum + table[i])
             {
                 return i;
             }
@@ -62,4 +63,5 @@ public class Util : MonoBehaviour
         return -1;
 
     }
+    #endregion
 }

@@ -5,8 +5,11 @@ using UnityEngine;
 public class SingletonMonoBehaviour<T> : MonoBehaviour where T : SingletonMonoBehaviour<T>
 {
 
+    #region Field
     static public T Instance { get; private set; }
+    #endregion
 
+    #region Unity Methods
     private void Awake()
     {
         if (Instance == null)
@@ -28,7 +31,9 @@ public class SingletonMonoBehaviour<T> : MonoBehaviour where T : SingletonMonoBe
             OnStart();
         }
     }
+    #endregion
 
+    #region Protected Methods
     protected virtual void OnAwake()
     {
 
@@ -38,5 +43,5 @@ public class SingletonMonoBehaviour<T> : MonoBehaviour where T : SingletonMonoBe
     {
 
     }
-
+    #endregion
 }
