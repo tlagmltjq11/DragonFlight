@@ -7,6 +7,7 @@
 <br>
 
 ### Video.:video_camera: <div id="1">이미지를 클릭해주세요.</div>
+[![시연영상](https://img.youtube.com/vi/p3UIaGcnMSU/0.jpg)](https://www.youtube.com/watch?v=p3UIaGcnMSU&feature=youtu.be)
 <br>
 <br>
 
