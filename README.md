@@ -4,6 +4,7 @@
 
 ### About Project.:two_men_holding_hands:
 라인게임즈에서 개발한 드래곤플라이트를 모작한 프로젝트입니다.<br>
+Mobile, PC 모두 플레이 가능합니다.<br>
 <br>
 
 ### Video.:video_camera: <div id="1">이미지를 클릭해주세요.</div>
