@@ -19,6 +19,8 @@ Mobile, PC 모두 플레이 가능합니다.<br>
 <summary>Popup 관련 Code 접기/펼치기</summary>
 <div markdown="1">
 
+<br>
+
 <details>
 <summary>&nbsp;&nbsp;&nbsp;&nbsp;PopupManager 접기/펼치기</summary>
 <div markdown="1">
@@ -27,27 +29,28 @@ Mobile, PC 모두 플레이 가능합니다.<br>
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public delegate void PopupButtonDelegate();
+public delegate void PopupButtonDelegate(); //델리게이트
 
-public class PopupManager : DonDestroy<PopupManager>
+public class PopupManager : DonDestroy<PopupManager> //DonDestroyOnLoad 적용
 {
     #region Field
     [SerializeField]
-    GameObject m_popupOkCancelPrefab; //동적로드 방식을 사용할 것임.
+    GameObject m_popupOkCancelPrefab; //'예', '아니오' 가 존재하는 팝업 프리팹
     [SerializeField]
-    GameObject m_popupOkPrefab;
+    GameObject m_popupOkPrefab; //'예' 가 존재하는 팝업 프리팹
     [SerializeField]
-    GameObject m_popupOptionPrefab;
+    GameObject m_popupOptionPrefab; //옵션 팝업 프리팹
 
-    int m_popupDepth = 1000;
-    int m_depthGap = 10;
+    int m_popupDepth = 1000; //팝업 depth 시작점
+    int m_depthGap = 10; //팝업간 depth 간격
 
-    List<GameObject> m_popupList = new List<GameObject>();
+    List<GameObject> m_popupList = new List<GameObject>(); //활성화된 팝업들 관리
     #endregion
 
     #region Unity Methods
     protected override void OnStart()
     {
+        //동적로드
         m_popupOkCancelPrefab = Resources.Load("Popup/PopupOkCancel") as GameObject;
         m_popupOkPrefab = Resources.Load("Popup/PopupOk") as GameObject;
         m_popupOptionPrefab = Resources.Load("Popup/PopupOption") as GameObject;
@@ -56,101 +59,100 @@ public class PopupManager : DonDestroy<PopupManager>
     #endregion
 
     #region Public Methods
+    //'예', '아니오'가 존재하는 팝업을 생성해주는 메소드
     public void OpenPopupOkCancel(string subject, string body, PopupButtonDelegate okBtnDel, PopupButtonDelegate cancelBtnDel, string okBtnStr = "OK", string cancelBtnStr = "Cancel")
     {
+        //팝업생성
         var obj = Instantiate(m_popupOkCancelPrefab) as GameObject;
         
-        //위에서부터 순서대로 찾아오기 때문에 가장먼저 온 패널이 가장 상위 패널임.
+        //위에서부터 순서대로 찾아오기 때문에 가장먼저 온 패널이 가장 상위 패널이다.
         var panels = obj.GetComponentsInChildren<UIPanel>();
         
         for(int i=0; i<panels.Length; i++)
         {
-            //시작점을 현재 팝업의 갯수 * 갭을 해주며 + i 를 해주면서 내부 패널들의 뎁스를 1씩 늘려 맞춰준다.
+            //시작점에 (팝업의 갯수 * 갭 + i) 를 더해주면서 내부 패널들의 뎁스를 맞춰준다.
             panels[i].depth = m_popupDepth + (m_popupList.Count * m_depthGap + i);
         }
 
-        //모든 팝업들을 팝업매니저의 자식으로 만들어 관리할것임.
-        obj.transform.SetParent(transform);
-
-        //초기화
-        obj.transform.localPosition = Vector3.zero;
-
+        obj.transform.SetParent(transform); //모든 팝업들을 팝업매니저의 자식으로 관리.
+        obj.transform.localPosition = Vector3.zero; //초기화
         var popup = obj.GetComponent<PopupOkCancel>();
 
-        //만들어진 팝업에 넘겨줌.
+        //생성된 팝업에 파라메터를 넘겨준다. -> 제목, 내용, ok메소드, cancel메소드, ok버튼네임, cancel버튼네임
         popup.SetPopup(subject, body, okBtnDel, cancelBtnDel, okBtnStr, cancelBtnStr);
 
+        //팝업리스트에 추가
         m_popupList.Add(obj);
     }
 
+    //'예' 가 존재하는 팝업을 생성해주는 메소드
     public void OpenPopupOk(string subject, string body, PopupButtonDelegate okBtnDel, string okBtnStr = "OK")
     {
-        var obj = Instantiate(m_popupOkPrefab) as GameObject;
+        var obj = Instantiate(m_popupOkPrefab) as GameObject; //팝업생성
 
-        //위에서부터 순서대로 찾아오기 때문에 가장먼저 온 패널이 가장 상위 패널임.
-        var panels = obj.GetComponentsInChildren<UIPanel>();
+        var panels = obj.GetComponentsInChildren<UIPanel>(); //패널들을 가져옴.
 
         for (int i = 0; i < panels.Length; i++)
         {
-            //시작점을 현재 팝업의 갯수 * 갭을 해주며 + i 를 해주면서 내부 패널들의 뎁스를 1씩 늘려 맞춰준다.
+            //시작점에 (팝업의 갯수 * 갭 + i) 를 더해주면서 내부 패널들의 뎁스를 맞춰준다.
             panels[i].depth = m_popupDepth + (m_popupList.Count * m_depthGap + i);
         }
 
-        //모든 팝업들을 팝업매니저의 자식으로 만들어 관리할것임.
+        //모든 팝업들을 팝업매니저의 자식으로 관리.
         obj.transform.SetParent(transform);
-
         //초기화
         obj.transform.localPosition = Vector3.zero;
-
         var popup = obj.GetComponent<PopupOk>();
 
-        //만들어진 팝업에 넘겨줌.
+        //생성된 팝업에 파라메터를 넘겨준다. -> 제목, 내용, ok메소드, ok버튼네임
         popup.SetPopup(subject, body, okBtnDel, okBtnStr);
 
-        m_popupList.Add(obj);
+        m_popupList.Add(obj); //팝업리스트에 추가
     }
 
+    //옵션 팝업을 생성해주는 메소드
     public void OpenPopupOption(PopupButtonDelegate okBtnDel)
     {
-        var obj = Instantiate(m_popupOptionPrefab) as GameObject;
-
-        //위에서부터 순서대로 찾아오기 때문에 가장먼저 온 패널이 가장 상위 패널임.
-        var panels = obj.GetComponentsInChildren<UIPanel>();
+        var obj = Instantiate(m_popupOptionPrefab) as GameObject; //팝업 생성
+        var panels = obj.GetComponentsInChildren<UIPanel>(); //패널들을 가져옴
 
         for (int i = 0; i < panels.Length; i++)
-        {
-            //시작점을 현재 팝업의 갯수 * 갭을 해주며 + i 를 해주면서 내부 패널들의 뎁스를 1씩 늘려 맞춰준다.
+        {    
+            //시작점에 (팝업의 갯수 * 갭 + i) 를 더해주면서 내부 패널들의 뎁스를 맞춰준다.
             panels[i].depth = m_popupDepth + (m_popupList.Count * m_depthGap + i);
         }
 
-        //모든 팝업들을 팝업매니저의 자식으로 만들어 관리할것임.
+        //모든 팝업들을 팝업매니저의 자식으로 관리.
         obj.transform.SetParent(transform);
-
         //초기화
         obj.transform.localPosition = Vector3.zero;
-
         var popup = obj.GetComponent<PopupOption>();
+        
+        //생성된 팝업에 파라메터를 넘겨준다. -> ok메소드
         popup.SetPopup(okBtnDel);
-        m_popupList.Add(obj);
+        
+        m_popupList.Add(obj); //팝업리스트에 추가
     }
 
+    //팝업창 닫기
     public void ClosePopup()
     {
         if(m_popupList.Count > 0)
         {
+            //가장 맨위에 올라와있는 팝업부터 닫을 수 밖에 없다.
             Destroy(m_popupList[m_popupList.Count - 1].gameObject);
-            //마지막에 생성된 팝업부터 없어질거라는 것을 아니까.
             m_popupList.Remove(m_popupList[m_popupList.Count-1]);
         }
     }
 
+    //팝업창을 닫을 수 있는지
     public bool CanClosePopup(KeyCode key)
     {
-        if(key == KeyCode.Escape)
+        if(key == KeyCode.Escape) //ESC 키가 눌린 상태라면
         {
             if(m_popupList.Count > 0)
             {
-                ClosePopup();
+                ClosePopup(); //팝업창 닫기
                 return true;
             }
         }
@@ -160,115 +162,6 @@ public class PopupManager : DonDestroy<PopupManager>
 }
 ```
   
-</div>
-</details>
-
-<details>
-<summary>&nbsp;&nbsp;&nbsp;&nbsp;PopupOption 접기/펼치기</summary>
-<div markdown="1">
-
-```c#
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class PopupOption : MonoBehaviour
-{
-    #region Field
-    //모든 트윈은 아래로 받아오기 가능.
-    [SerializeField]
-    UITweener m_popupTween;
-    PopupButtonDelegate m_okBtnDel;
-
-    [SerializeField]
-    UIToggle m_bgmToggle;
-    [SerializeField]
-    UIToggle m_sfxToggle;
-
-    [SerializeField]
-    UISprite m_speedIcon;
-
-    int m_curSpeed;
-    #endregion
-
-    #region Unity Methods
-    void Start()
-    {
-        var onBGM = PlayerPrefs.GetInt("OPTION_BGM", 1) == 1 ? false : true;
-        var onSFX = PlayerPrefs.GetInt("OPTION_SFX", 1) == 1 ? false : true;
-        m_curSpeed = PlayerPrefs.GetInt("OPTION_SPEED", 1);
-
-        m_speedIcon.spriteName = string.Format("option_{0}x", m_curSpeed);
-
-        m_bgmToggle.value = !onBGM;
-        m_sfxToggle.value = !onSFX;
-    }
-    #endregion
-
-    #region Public Methods
-    //파라메터로 안주면 ok, cancel값으로 들어간다는 의미. 또한 생략할 수 있게끔 맨뒤에 위치시켜야 한다.
-    public void SetPopup(PopupButtonDelegate okBtnDel)
-    {
-        m_popupTween.ResetToBeginning();
-        m_popupTween.PlayForward();
-        m_okBtnDel = okBtnDel;
-    }
-
-    public void SetBGM()
-    {
-        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
-
-        var isOn = m_bgmToggle.value;
-        SoundManager.Instance.MuteBGM(!isOn);
-
-        if(isOn)
-        {
-            SoundManager.Instance.PlayBGM();
-        }
-
-        PlayerPrefs.SetInt("OPTION_BGM", isOn == true ? 1 : 0);
-        PlayerPrefs.Save();
-    }
-
-    public void SetSFX()
-    {
-        var isOn = m_sfxToggle.value;
-        SoundManager.Instance.MuteSFX(!isOn);
-
-        if (isOn)
-        {
-            SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.GetItem);
-        }
-
-        PlayerPrefs.SetInt("OPTION_SFX", isOn == true ? 1 : 0);
-        PlayerPrefs.Save();
-    }
-
-    public void SetSpeed()
-    {
-        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
-
-        m_curSpeed++;
-        if(m_curSpeed > 3)
-        {
-            m_curSpeed = 1;
-        }
-
-        m_speedIcon.spriteName = string.Format("option_{0}x", m_curSpeed);
-
-        PlayerPrefs.SetInt("OPTION_SPEED", m_curSpeed);
-        PlayerPrefs.Save();
-    }
-
-    public void OnPressOk()
-    {
-        m_okBtnDel();
-        PopupManager.Instance.ClosePopup();
-    }
-    #endregion
-}
-```
-
 </div>
 </details>
 
@@ -285,42 +178,45 @@ public class PopupOkCancel : MonoBehaviour
 {
     #region Field
     [SerializeField]
-    UILabel m_subjectLabel;
+    UILabel m_subjectLabel; //제목
     [SerializeField]
-    UILabel m_bodyLabel;
+    UILabel m_bodyLabel; //내용
     [SerializeField]
-    UILabel m_okBtnLabel;
+    UILabel m_okBtnLabel; //ok버튼
     [SerializeField]
-    UILabel m_canceBtnlLabel;
+    UILabel m_canceBtnlLabel; //cancel버튼
     
-    //모든 트윈은 아래로 받아오기 가능.
     [SerializeField]
-    UITweener m_popupTween;
+    UITweener m_popupTween; //트윈 스케일
 
-    PopupButtonDelegate m_okBtnDel;
-    PopupButtonDelegate m_cancelBtnDel;
+    PopupButtonDelegate m_okBtnDel; //ok 버튼 델리게이트
+    PopupButtonDelegate m_cancelBtnDel; //cancel 버튼 델리게이트
     #endregion
 
     #region Public Methods
-    //파라메터로 안주면 ok, cancel값으로 들어간다는 의미. 또한 생략할 수 있게끔 맨뒤에 위치시켜야 한다.
+    //팝업 초기화 및 트윈 재생
     public void SetPopup(string subject, string body, PopupButtonDelegate  okBtnDel, PopupButtonDelegate cancelBtnDel, string okBtnText = "OK", string cancelBtnText = "Cancel")
     {
         m_popupTween.ResetToBeginning();
-        m_popupTween.PlayForward();
+        m_popupTween.PlayForward(); //트윈 재생
 
+        //text 초기화
         m_subjectLabel.text = subject;
         m_bodyLabel.text = body;
         m_okBtnLabel.text = okBtnText;
         m_canceBtnlLabel.text = cancelBtnText;
+        
+        //델리게이트 대입
         m_okBtnDel = okBtnDel;
         m_cancelBtnDel = cancelBtnDel;
     }
 
+    //ok버튼이 눌렸을 경우
     public void OnPressOk()
     {
         if(m_okBtnDel != null)
         {
-            m_okBtnDel();
+            m_okBtnDel(); //ok 델리게이트에 대입된 메소드 실행
         }
         else
         {
@@ -328,14 +224,15 @@ public class PopupOkCancel : MonoBehaviour
         }
     }
 
+    //cancel버튼이 눌렸을 경우
     public void OnPressCancel()
     {
         if(m_cancelBtnDel != null)
         {
-            m_cancelBtnDel();
+            m_cancelBtnDel(); //cancel 델리게이트에 대입된 메소드 실행
         }
 
-        PopupManager.Instance.ClosePopup();
+        PopupManager.Instance.ClosePopup(); //팝업창 
     }
     #endregion
 }
@@ -345,49 +242,110 @@ public class PopupOkCancel : MonoBehaviour
 </details>
 
 <details>
-<summary>&nbsp;&nbsp;&nbsp;&nbsp;PopupOk 접기/펼치기</summary>
+<summary>&nbsp;&nbsp;&nbsp;&nbsp;PopupOption 접기/펼치기</summary>
 <div markdown="1">
- 
+
 ```c#
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PopupOk : MonoBehaviour
+public class PopupOption : MonoBehaviour
 {
     #region Field
-    [SerializeField]
-    UILabel m_subjectLabel;
-    [SerializeField]
-    UILabel m_bodyLabel;
-    [SerializeField]
-    UILabel m_okBtnLabel;
-
-    //모든 트윈은 아래로 받아오기 가능.
+    //모든 트윈은 아래로 받아옴
     [SerializeField]
     UITweener m_popupTween;
+    PopupButtonDelegate m_okBtnDel; //ok 델리게이트
 
-    PopupButtonDelegate m_okBtnDel;
+    [SerializeField]
+    UIToggle m_bgmToggle; //bgm
+    [SerializeField]
+    UIToggle m_sfxToggle; //효과음
+    [SerializeField]
+    UISprite m_speedIcon; //조작속도
+
+    int m_curSpeed; //현재 조작속도
+    #endregion
+
+    #region Unity Methods
+    void Start()
+    {
+        var onBGM = PlayerPrefs.GetInt("OPTION_BGM", 1) == 1 ? false : true;
+        var onSFX = PlayerPrefs.GetInt("OPTION_SFX", 1) == 1 ? false : true;
+        m_curSpeed = PlayerPrefs.GetInt("OPTION_SPEED", 1);
+
+        m_speedIcon.spriteName = string.Format("option_{0}x", m_curSpeed); //Atlas에서 현재 조작속도에 맞는 이미지로 변경
+
+        //현재 bgm과 효과음의 on/off 여부에 따라 토글을 통해 이미지를 변경해준다.
+        m_bgmToggle.value = !onBGM;
+        m_sfxToggle.value = !onSFX;
+    }
     #endregion
 
     #region Public Methods
-    //파라메터로 안주면 ok, cancel값으로 들어간다는 의미. 또한 생략할 수 있게끔 맨뒤에 위치시켜야 한다.
-    public void SetPopup(string subject, string body, PopupButtonDelegate okBtnDel, string okBtnText = "OK")
+    //팝업 초기화 및 트윈 재생
+    public void SetPopup(PopupButtonDelegate okBtnDel)
     {
         m_popupTween.ResetToBeginning();
-        m_popupTween.PlayForward();
-
-        m_subjectLabel.text = subject;
-        m_bodyLabel.text = body;
-        m_okBtnLabel.text = okBtnText;
-        m_okBtnDel = okBtnDel;
+        m_popupTween.PlayForward(); //트윈 재생
+        m_okBtnDel = okBtnDel; //델리게이트에 대입
     }
 
+    //bgm 옵션
+    public void SetBGM()
+    {
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); //버튼클릭음 재생
+
+        var isOn = m_bgmToggle.value;
+        SoundManager.Instance.MuteBGM(!isOn); //토글의 상태값에 따라 BGM on/off
+
+        if(isOn)
+        {
+            SoundManager.Instance.PlayBGM(); //On상태라면 다시 bgm재생
+        }
+
+        PlayerPrefs.SetInt("OPTION_BGM", isOn == true ? 1 : 0); //PlayerPrefs에 저장
+        PlayerPrefs.Save();
+    }
+
+    //효과음 옵션
+    public void SetSFX()
+    {
+        var isOn = m_sfxToggle.value;
+        SoundManager.Instance.MuteSFX(!isOn);
+
+        if (isOn)
+        {
+            SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.GetItem);
+        }
+
+        PlayerPrefs.SetInt("OPTION_SFX", isOn == true ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
+    //조작속도 옵션
+    public void SetSpeed()
+    {
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+
+        m_curSpeed++;
+        if(m_curSpeed > 3)
+        {
+            m_curSpeed = 1;
+        }
+
+        m_speedIcon.spriteName = string.Format("option_{0}x", m_curSpeed);
+
+        PlayerPrefs.SetInt("OPTION_SPEED", m_curSpeed);
+        PlayerPrefs.Save();
+    }
+
+    //ok버튼이 눌렸을 경우
     public void OnPressOk()
     {
-
         m_okBtnDel();
-        PopupManager.Instance.ClosePopup();
+        PopupManager.Instance.ClosePopup(); //
     }
     #endregion
 }
@@ -395,6 +353,20 @@ public class PopupOk : MonoBehaviour
 
 </div>
 </details>
+
+<br>
+
+PopupOK 생략..
+
+<br>
+
+**Explanation**:mortar_board:<br>
+(구현설명은 주석으로 간단하게 처리했습니다!)<br>
+<br>
+
+*PopupManager*<br>
+
+*LoadSceneManager*<br>
 
 ```c#
 using System.Collections;
