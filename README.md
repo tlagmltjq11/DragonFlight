@@ -242,6 +242,56 @@ public class PopupOkCancel : MonoBehaviour
 </details>
 
 <details>
+<summary>&nbsp;&nbsp;&nbsp;&nbsp;PopupOk 접기/펼치기</summary>
+<div markdown="1">
+
+```c#
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PopupOk : MonoBehaviour
+{
+    #region Field
+    [SerializeField]
+    UILabel m_subjectLabel;  //제목
+    [SerializeField]
+    UILabel m_bodyLabel; //내용
+    [SerializeField]
+    UILabel m_okBtnLabel; //ok버튼
+
+    [SerializeField]
+    UITweener m_popupTween; //트윈 스케일
+
+    PopupButtonDelegate m_okBtnDel; //ok버튼 델리게이트
+    #endregion
+
+    #region Public Methods
+    //팝업 초기화 및 트윈 재생
+    public void SetPopup(string subject, string body, PopupButtonDelegate okBtnDel, string okBtnText = "OK")
+    {
+        m_popupTween.ResetToBeginning();
+        m_popupTween.PlayForward();
+
+        m_subjectLabel.text = subject;
+        m_bodyLabel.text = body;
+        m_okBtnLabel.text = okBtnText;
+        m_okBtnDel = okBtnDel;
+    }
+
+    public void OnPressOk()
+    {
+        m_okBtnDel();
+        PopupManager.Instance.ClosePopup();
+    }
+    #endregion
+}
+```
+
+</div>
+</details>
+
+<details>
 <summary>&nbsp;&nbsp;&nbsp;&nbsp;PopupOption 접기/펼치기</summary>
 <div markdown="1">
 
@@ -362,9 +412,7 @@ PopupOK 생략..
 
 **Explanation**:mortar_board:<br>
 (구현설명은 주석으로 간단하게 처리했습니다!)<br>
-어느 상황에서던지 팝업창을 사용할 수 있게 DonDestoryOnLoad를 적용시킨 PopupManager를 구성했습니다.
-사용 용도에 따라 선택용 팝업(PopupOkCancel), 확인용 팝업(PopupOk), 옵션용 팝업(PopupOption)으로 구분지었으며, 각 버튼 클릭시 처리해야하는 부분들은
-Delegate를 이용해서 팝업 생성과 동시에 넘겨주도록 구현했습니다. 그리하여, 동일한 팝업 Prefab으로 여러 상황을 대처할 수 있게 되었습니다.
+어느 상황에서든지 팝업창을 사용할 수 있게 DonDestoryOnLoad를 적용한 PopupManager를 구성했습니다. 사용 용도에 따라 선택용 팝업(PopupOkCancel), 확인용 팝업(PopupOk), 옵션용 팝업(PopupOption)으로 구분 지었으며, 각 버튼 클릭 시 처리해야 하는 부분들은 Delegate를 이용해서 팝업 생성과 동시에 넘겨주도록 구현했습니다. 그리하여, 동일한 팝업 Prefab으로 여러 상황을 대처할 수 있게 되었습니다.
 
 <br>
 
