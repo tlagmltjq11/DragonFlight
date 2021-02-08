@@ -72,8 +72,6 @@ public class LoadSceneManager : DonDestroy<LoadSceneManager>
                 m_state = m_loadState;
                 m_loadState = eSceneState.None;
                 m_progressLabel = "100";
-
-
             }
             else
             {

@@ -61,7 +61,7 @@ public class MeteoManager : SingletonMonoBehaviour<MeteoManager>
 
     public void CreateMeteo()
     {
-        int nums = Random.Range(1, 4); //4개를 만드는 경우는 피하기 위한 길을 위해 제거.
+        int nums = Random.Range(1, 4);
 
         for(int i=0; i<nums; i++)
         {

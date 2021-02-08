@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//의미상 매니저 스크립트로 이동시켰음.
-//public delegate void PopupButtonDelegate();
 
 public class PopupOkCancel : MonoBehaviour
 {

@@ -16,7 +16,7 @@ public class PlayerDataManager : DonDestroy<PlayerDataManager>
     #region Unity Methods
     protected override void OnAwake()
     {
-        //PlayerPrefs.DeleteAll();
+        PlayerPrefs.DeleteAll();
         LoadData();
     }
 
