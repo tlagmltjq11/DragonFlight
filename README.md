@@ -787,8 +787,8 @@ public class MonsterManager : SingletonMonoBehaviour<MonsterManager> //싱글턴
     PlayerController m_player; //플레이어
     List<MonsterController> m_monsterList = new List<MonsterController>(); //Active되어있는 몬스터들만 들어있는 리스트
     int m_lineNumber; //라인넘버 -> 몇번째로 생성된 라인인지를 나타냄
-    float m_spawnTimeScale = 1f;
-    float m_spawnInterval = 2.549f;
+    float m_spawnTimeScale = 1f; //몬스터의 생성속도와 이동속도의 기준치
+    float m_spawnInterval = 2.549f; //몬스터 생성메소드의 호출 간격
     #endregion
 
     #region Unity Methods
@@ -820,6 +820,7 @@ public class MonsterManager : SingletonMonoBehaviour<MonsterManager> //싱글턴
         CancelInvoke("CreateMonsters");
     }
 
+    //몬스터의 생성속도 및 이동속도 변경
     public void SetSpawnInterval(float scale) 
     {
         m_spawnTimeScale = scale;
@@ -832,7 +833,7 @@ public class MonsterManager : SingletonMonoBehaviour<MonsterManager> //싱글턴
 
         //기존 리피팅 취소
         CancelInvoke("CreateMonsters");
-        InvokeRepeating("CreateMonsters", 0f, m_spawnInterval / m_spawnTimeScale);
+        InvokeRepeating("CreateMonsters", 0f, m_spawnInterval / m_spawnTimeScale); //scale을 기준으로 몬스터 생성속도 변경
     }
 
     //몬스터 생성
