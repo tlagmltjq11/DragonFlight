@@ -362,42 +362,47 @@ PopupOK 생략..
 
 **Explanation**:mortar_board:<br>
 (구현설명은 주석으로 간단하게 처리했습니다!)<br>
+어느 상황에서던지 팝업창을 사용할 수 있게 DonDestoryOnLoad를 적용시킨 PopupManager를 구성했습니다.
+사용 용도에 따라 선택용 팝업(PopupOkCancel), 확인용 팝업(PopupOk), 옵션용 팝업(PopupOption)으로 구분지었으며, 각 버튼 클릭시 처리해야하는 부분들은
+Delegate를 이용해서 팝업 생성과 동시에 넘겨주도록 구현했습니다. 그리하여, 동일한 팝업 Prefab으로 여러 상황을 대처할 수 있게 되었습니다.
+
 <br>
 
-*PopupManager*<br>
 
+해당 팝업들은 아래와 같이 사용되었습니다.
 ```c#
 //LoadSceneManager 간략화
 public class LoadSceneManager : DonDestroy<LoadSceneManager>
 {
+    AsyncOperation m_loadSceneState;
+    
     #region Unity Methods
     void Update()
     {
         if(m_loadSceneState != null && m_loadState != eSceneState.None)
         {
-            if(m_loadSceneState.isDone)
+            if(m_loadSceneState.isDone) //씬 로드가 완료된 경우
             {
                 m_loadSceneState = null;
-                m_state = m_loadState;
-                m_loadState = eSceneState.None;
-                m_progressLabel = "100";
+                m_state = m_loadState; //현재 씬 상태를 로드된 씬으로 초기화
+                m_loadState = eSceneState.None; //로드할 씬 상태 none으로 초기화
+                m_progressLabel = "100"; 
             }
             else
             {
-                m_progressLabel = ((int)(m_loadSceneState.progress * 100)).ToString();
+                m_progressLabel = ((int)(m_loadSceneState.progress * 100)).ToString(); //로딩이 진행 중임을 보여줌.
             }
         }
-        else
+        else //씬 로드중이 아니라면
         {
-            //씬이 로드중이 아니라면
-            if(Input.GetKeyDown(KeyCode.Escape))
+            if(Input.GetKeyDown(KeyCode.Escape)) //esc키를 눌렀을 경우
             {
-                //닫힐 팝업이 없다면
+                //닫힐 팝업이 없는경우 -> 닫힐 팝업이 있었다면, esc키를 통해 해당 팝업이 닫혔을 것.
                 if(!PopupManager.Instance.CanClosePopup(KeyCode.Escape))
                 {
-                    switch(m_state)
+                    switch(m_state) //현재 씬 상태에 따라 case
                     {
-                        case eSceneState.Title:
+                        case eSceneState.Title: //타이틀인 경우 게임종료 팝업을 띄워준다.
                             PopupManager.Instance.OpenPopupOkCancel("[0000FF]Notice[-]", "게임을 종료하시겠습니까?", () => {
 #if UNITY_EDITOR
                                 SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
@@ -408,19 +413,21 @@ public class LoadSceneManager : DonDestroy<LoadSceneManager>
 #endif
                             }, () => { SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); }, "예", "아니오");
                             break;
-                        case eSceneState.Lobby:
+                            
+                        case eSceneState.Lobby: //로비인 경우 타이틀로 돌아가는 팝업을 띄워준다.
                             PopupManager.Instance.OpenPopupOkCancel("[0000FF]Notice[-]", "타이틀 화면으로 돌아가시겠습니까?", () => {
                                 SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
-                                LoadSceneAsync(eSceneState.Title);
+                                LoadSceneAsync(eSceneState.Title); //비동기로딩
                                 PopupManager.Instance.ClosePopup();
                             }, () => { SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); }, "예", "아니오");
                             break;
-                        case eSceneState.Game:
+                            
+                        case eSceneState.Game: //게임중일 경우 로비로 돌아가는 팝업을 띄워준다.
                             PopupManager.Instance.OpenPopupOkCancel("[0000FF]Notice[-]", "로비 화면으로 돌아가시겠습니까?", () => {
                                 SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
-                                LoadSceneAsync(eSceneState.Lobby);
+                                LoadSceneAsync(eSceneState.Lobby); //비동기로딩
                                 Time.timeScale = 1;
-                                PopupManager.Instance.ClosePopup();
+                                PopupManager.Instance.ClosePopup(); 
                             }, () => { SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); }, "예", "아니오");
                             break;
                     }
