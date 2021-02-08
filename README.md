@@ -492,6 +492,8 @@ public class LoadSceneManager : DonDestroy<LoadSceneManager>
 <summary>Menu 관련 Code 접기/펼치기</summary>
 <div markdown="1">
   
+<br>
+  
 <details>
 <summary>&nbsp;&nbsp;&nbsp;&nbsp;ILobbyMenu 접기/펼치기</summary>
 <div markdown="1">
@@ -522,7 +524,8 @@ public interface ILobbyMenu
 <details>
 <summary>&nbsp;&nbsp;&nbsp;&nbsp;LobbyMenu_Character 접기/펼치기</summary>
 <div markdown="1">
-
+  
+<br>
 //인벤토리와 상점 스크립트는 이와 유사하므로 생략.. 
 
 ```c#
@@ -742,12 +745,14 @@ public class Util : MonoBehaviour
     }
     #endregion
     
-    //
+    //이하 생략
 }
 ```
   
 </div>
 </details>
+
+<
 
 **Explanation**:mortar_board:<br>
 (구현설명은 주석으로 간단하게 처리했습니다!)<br>
