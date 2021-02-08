@@ -492,9 +492,417 @@ public class LoadSceneManager : DonDestroy<LoadSceneManager>
 <summary>Managers Code 접기/펼치기</summary>
 <div markdown="1">
 
+<br>
+
 <details>
-<summary>&nbsp;&nbsp;&nbsp;&nbsp;PopupOption 접기/펼치기</summary>
+<summary>&nbsp;&nbsp;&nbsp;&nbsp;BuffManager 접기/펼치기</summary>
 <div markdown="1">
+ 
+```c#
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System.Linq;
+
+public class BuffManager : SingletonMonoBehaviour<BuffManager> //싱글턴패턴 적용
+{
+    #region Field
+    public enum eBuffType //버프타입
+    {
+        PowerShot, //파워샷 - 미구현
+        Invincible, //부스터 + 무적
+        Magnet, //자석
+        Shield, //방어 후 무적
+        Max
+    }
+
+    Dictionary<eBuffType, float> m_buffList = new Dictionary<eBuffType, float>(); //각 버프마다 지속시간 체크를 위한 딕셔너리
+    float[] durations = new float[] { 10f, 2.55f, 5f, 3f }; //각 버프별 지속시간
+    CameraShake m_camShake; //Invincible 효과시 카메라 흔들림 효과
+
+    PlayerController m_player; //플레이어
+    #endregion
+
+    #region Unity Methods
+    protected override void OnStart()
+    {
+        m_camShake = Camera.main.GetComponent<CameraShake>();
+        m_player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+
+        for(int i=0; i< (int)eBuffType.Max; i++)
+        {
+            m_buffList.Add((eBuffType)i, 0); //각 버프를 딕셔너리에 초기화
+        }
+    }
+
+    void Update()
+    {
+        foreach (var kvp in m_buffList.ToList())
+        {
+            if (kvp.Value != 0) //버프가 진행중일 경우 -> 즉 남은시간이 0초가 아닌 경우
+            {
+                float newLen = kvp.Value - Time.deltaTime; //Time.deltaTime을 빼주며 시간체크
+
+                if (newLen > 0f) //아직 시간이 남은경우
+                {
+                    m_buffList[kvp.Key] = newLen; //남은 시간 변경
+                }
+                else //시간이 남지 않은 경우
+                {
+                    m_buffList[kvp.Key] = 0f; //남은 시간을 0초로 초기화
+
+                    switch (kvp.Key) //key값에 따른 case
+                    {
+                        case eBuffType.Magnet:
+                            m_player.SetMagnet(false); //자석효과 해제
+                            break;
+                        case eBuffType.Invincible:
+                            GameManager.Instance.SetState(GameManager.eGameState.Normal); //노말상태로 변경시켜 배경스크롤링, 몬스터 생성속도 및 이동속도 원상복귀
+                            m_player.SetShockWave(true); //필드 정리를 위한 쇼크웨이브 발동
+                            break;
+                        case eBuffType.Shield:
+                            m_player.ShieldOff(); //방어효과 해제
+                            break;
+                    }
+                }
+            }
+        }
+    }
+    #endregion
+
+    #region Public Methods
+    //버프 활성화 메소드
+    public void SetBuff(eBuffType buff)
+    {
+        if(buff == eBuffType.Invincible) //Invincible인 경우 카메라쉐이킹 효과
+        {
+            m_camShake.ShakeCamera();
+        }
+
+        if (m_buffList[buff] == 0f) //해당 버프가 활성화되어있지 않은 경우
+        {
+            m_buffList[buff] = durations[(int)buff]; //해당 버프의 지속시간만큼 대입
+            switch (buff)
+            {
+                case eBuffType.Magnet:
+                    m_player.SetMagnet(true); //자석효과 활성화
+                    break;
+                case eBuffType.Invincible:
+                    GameManager.Instance.SetState(GameManager.eGameState.Invincible); //Invincible 상태로 변경시켜 배경스크롤링, 몬스터 생성속도 및 이동속도 증폭
+                    break;
+                case eBuffType.Shield:
+                    m_player.ShieldOn(); //쉴드효과 활성화
+                    break;
+            }
+        }
+        else //해당 버프가 이미 활성화되어있던 경우
+        {
+            m_buffList[buff] = durations[(int)buff]; //시간을 리셋시켜준다.
+        }
+    }
+    #endregion
+}
+```
+
+</div>
+</details>
+
+<details>
+<summary>&nbsp;&nbsp;&nbsp;&nbsp;SoundManager 접기/펼치기</summary>
+<div markdown="1">
+  
+```c#
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class SoundManager : DonDestroy<SoundManager> //싱글턴 + DonDestroyOnLoad 적용
+{
+    #region Field
+    public enum eAudioType //오디오타입
+    {
+        BGM,
+        SFX,
+        Max
+    }
+
+    public enum eAudioSFXClip //효과음 클립 타입
+    {
+        GetCoin,
+        GetGem,
+        GetInvincible,
+        GetItem,
+        MonDie,
+        NextScene,
+        ButtonClick,
+        Shield,
+        MeteoExplosion,
+        MeteoAlert,
+        Result,
+        PlayerDie,
+        Max
+    }
+
+    public enum eAudioBGMClip //BGM 클립 타입
+    {
+        BGM01,
+        BGM02,
+        BGM03,
+        Lobby,
+        Max
+    }
+
+    [SerializeField]
+    AudioClip[] m_sfxClip; //효과음 클립들
+    [SerializeField]
+    AudioClip[] m_bgmClip; //BGM 클립들
+
+    AudioSource[] m_audio = new AudioSource[(int)eAudioType.Max]; //오디오소스 리스트 생성
+    //동시재생에 제한을 두기 위한 List
+    List<float> m_limitList = new List<float>();
+    #endregion
+
+    #region Unity Methods
+    protected override void OnStart()
+    {
+        //BGM용 오디오소스 생성 및 초기화
+        m_audio[(int)eAudioType.BGM] = gameObject.AddComponent<AudioSource>();
+        m_audio[(int)eAudioType.BGM].loop = true; //반복시킴
+        m_audio[(int)eAudioType.BGM].playOnAwake = false;
+        m_audio[(int)eAudioType.BGM].rolloffMode = AudioRolloffMode.Linear;
+        
+        //효과음용 오디오소스 생성 및 초기화
+        m_audio[(int)eAudioType.SFX] = gameObject.AddComponent<AudioSource>();
+        m_audio[(int)eAudioType.SFX].loop = false;
+        m_audio[(int)eAudioType.SFX].playOnAwake = false;
+        m_audio[(int)eAudioType.SFX].rolloffMode = AudioRolloffMode.Linear;
+
+        //PlayerPrefs에 저장되어있던 옵션값대로 Mute의 활성화 여부를 결정.
+        MuteBGM(PlayerPrefs.GetInt("OPTION_BGM", 1) == 1 ? false : true);
+        MuteSFX(PlayerPrefs.GetInt("OPTION_SFX", 1) == 1 ? false : true);
+    }
+
+    private void Update()
+    {
+        //더블버퍼를 통해 반복문내 List의 Remove를 통한 Count에러를 차단함.
+        List<float> newList = new List<float>();
+
+        for (int i=0; i<m_limitList.Count; i++)
+        {
+            float newLen = m_limitList[i] - Time.deltaTime; //Time.deltaTime을 빼주면서 오디오클립의 남은 재생시간을 체크한다.
+            if(newLen > 0.0f) //재생시간이 남아있는 경우
+            {
+                newList.Add(newLen); //새 버퍼에 추가
+            }
+        }
+
+        m_limitList = newList; //기존 버퍼로 대입
+    }
+    #endregion
+
+    #region Public Methods
+    public void MuteSFX(bool isOn) //효과음 mute
+    {
+        m_audio[(int)eAudioType.SFX].mute = isOn;
+    }
+
+    public void PlaySfx(eAudioSFXClip clip) //효과음 play
+    {
+        //이미 리스트에 play 요청이 들어온 오디오클립이 포함되어있는 경우 -> 즉 이미 동일한 클립이 재생중인 경우 포함시키지 않음으로써 중복재생을 막는다.
+        if(!m_limitList.Contains(m_sfxClip[(int)clip].length))
+        {
+            m_limitList.Add(m_sfxClip[(int)clip].length); //오디오클립의 재생길이를 add
+            m_audio[(int)eAudioType.SFX].PlayOneShot(m_sfxClip[(int)clip]); //play
+        }  
+    }
+    
+    public void MuteBGM(bool isOn) //BGM mute
+    {
+        m_audio[(int)eAudioType.BGM].mute = isOn;
+    }
+
+    public void PauseBGM() //BGM pause
+    {
+        m_audio[(int)eAudioType.BGM].Pause();
+    }
+
+    public void PlayBGM() //BGM play
+    {
+        if (m_audio[(int)eAudioType.BGM].clip == null) return;
+        m_audio[(int)eAudioType.BGM].Play();
+    }
+    
+    public void PlayBGM(eAudioBGMClip clip, float volume) //BGM play overloading
+    {
+        m_audio[(int)eAudioType.BGM].clip = m_bgmClip[(int)clip];
+        m_audio[(int)eAudioType.BGM].volume = volume;
+        m_audio[(int)eAudioType.BGM].Play();
+    }
+    #endregion
+}
+```
+
+</div>
+</details>
+
+<details>
+<summary>&nbsp;&nbsp;&nbsp;&nbsp;MonsterManager 접기/펼치기</summary>
+<div markdown="1">
+
+```c#
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class MonsterManager : SingletonMonoBehaviour<MonsterManager> //싱글턴패턴 적용
+{
+    #region Field
+    [Serializable]
+    public class MonsterPartsSprite //몬스터 타입별로 파츠를 지정해주기 위해 클래스로 구성
+    {
+        public Sprite[] m_parts; //몬스터를 이루는 양날개, 몸통, 눈 등 이미지 파츠들
+    }
+
+    public enum eMonsterType //몬스터 타입
+    {
+        None = -1,
+        White,
+        Yellow,
+        Pink,
+        Bomb, //폭탄 드래곤
+        Max
+    }
+
+    [SerializeField]
+    GameObject m_monsterPrefab; //몬스터 프리팹 -> 파츠만 변경시켜서 사용
+    [SerializeField]
+    MonsterPartsSprite[] m_monsterParts; //몬스터파츠 클래스형 배열
+    GameObjectPool<MonsterController> m_monsterPool; //오브젝트 풀링
+
+    //가장왼쪽위 몬스터의 시작좌표
+    Vector2 m_startPos = new Vector2(-2.26f, 6f);
+    float m_posXGap = 1.12f; //몬스터간 좌표 갭
+
+    PlayerController m_player; //플레이어
+    List<MonsterController> m_monsterList = new List<MonsterController>(); //Active되어있는 몬스터들만 들어있는 리스트
+    int m_lineNumber; //라인넘버 -> 몇번째로 생성된 라인인지를 나타냄
+    float m_spawnTimeScale = 1f;
+    float m_spawnInterval = 2.549f;
+    #endregion
+
+    #region Unity Methods
+    protected override void OnStart()
+    {
+        m_player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+
+        //오브젝트 풀링 적용
+        m_monsterPool = new GameObjectPool<MonsterController>(20, () =>
+        {
+            var obj = Instantiate(m_monsterPrefab) as GameObject;
+            obj.transform.SetParent(transform);
+            obj.transform.localPosition = Vector3.zero; 
+            obj.transform.localRotation = Quaternion.identity;
+            obj.transform.localScale = Vector3.one;
+            var mon = obj.GetComponent<MonsterController>();
+            mon.InitMonster(m_player); // 각 몬스터에게 플레이어를 넘겨줌
+
+            return mon;
+        });
+
+        InvokeRepeating("CreateMonsters", 3f, m_spawnInterval / m_spawnTimeScale); //몬스터 생성 메소드를 간격마다 호출
+    }
+    #endregion
+
+    #region Public Methods
+    public void StopCreateMonsters() //몬스터 생성 중지
+    {
+        CancelInvoke("CreateMonsters");
+    }
+
+    public void SetSpawnInterval(float scale) 
+    {
+        m_spawnTimeScale = scale;
+
+        //이미 생성되어있는 몬스터들의 이동 스케일을 바꿔준다.
+        for (int i = 0; i < m_monsterList.Count; i++)
+        {
+            m_monsterList[i].SetSpeedScale(scale);
+        }
+
+        //기존 리피팅 취소
+        CancelInvoke("CreateMonsters");
+        InvokeRepeating("CreateMonsters", 0f, m_spawnInterval / m_spawnTimeScale);
+    }
+
+    //몬스터 생성
+    public void CreateMonsters()
+    {
+        bool isBomb = false; //각 라인마다 폭탄 드래곤의 생성여부를 체크
+        for (int i = 0; i < 5; i++) //5마리 생성
+        {
+            var type = (eMonsterType)UnityEngine.Random.Range((int)eMonsterType.White, (int)eMonsterType.Max); //타입을 랜덤으로 결정
+
+            if (type == eMonsterType.Bomb && !isBomb) //폭탄드래곤이 생성된적이 없고, 폭탄드래곤이 나온 경우
+            {
+                isBomb = true;
+            }
+            else if (type == eMonsterType.Bomb && isBomb) //폭탄드래곤이 나왔는데 이미 생성되어있는 경우 -> 한 라인에 폭탄드래곤은 한마리만 존재해야함.
+            {
+                do
+                {
+                    type = (eMonsterType)UnityEngine.Random.Range((int)eMonsterType.White, (int)eMonsterType.Max);
+                } while (type == eMonsterType.Bomb); //폭탄드래곤이 아닌 다른 타입이 나올때까지 반복
+            }
+
+            var mon = m_monsterPool.Get(); //오브젝트풀링에서 드래곤을 하나 받아온다.
+            mon.SetMonster(type, m_lineNumber, m_spawnTimeScale); //타입, 라인넘버, 스케일값을 초기화
+            mon.transform.position = Vector3.right * (m_startPos.x + i * m_posXGap) + Vector3.up * m_startPos.y; //드래곤이 활성화될 위치를 계산하여 대입
+            mon.gameObject.SetActive(true); //활성화
+
+            m_monsterList.Add(mon); //활성화되어있는 몬스터 리스트에 추가
+        } 
+        m_lineNumber++; //라인넘버 ++
+    }
+
+    //몬스터 제거
+    public void RemoveMonster(MonsterController mon)
+    {
+        mon.gameObject.SetActive(false); //몬스터 오브젝트 비활성화
+        if (m_monsterList.Remove(mon))
+        {
+            m_monsterPool.Set(mon); //풀링에 반환
+        }
+    }
+
+    //Bomb몬스터가 죽을때 해당 라인의 모든 몬스터를 제거.
+    public void RemoveMonsterAll(int lineNum)
+    {
+        for (int i = 0; i < m_monsterList.Count; i++)
+        {
+            if (m_monsterList[i].LineNum == lineNum) //제거된 폭탄드래곤과 같은 라인넘버를 가진 드래곤들을 모두 제거 
+            {
+                m_monsterList[i].m_isAlive = false;
+                m_monsterList[i].SetDie();
+                m_monsterList[i].gameObject.SetActive(false);
+                m_monsterPool.Set(m_monsterList[i]); //풀링에 반환
+            }
+        }
+
+        //한번에 리스트에서 지워준다.
+        m_monsterList.RemoveAll(mon => !mon.m_isAlive);
+    }
+
+    //몬스터의 파츠 이미지를 
+    public Sprite[] GetMonsterParts(eMonsterType type)
+    {
+        //해당 타입의 스프라이트들을 넘겨줌.
+        return m_monsterParts[(int)type].m_parts;
+    }
+    #endregion
+}
+```
+
 </div>
 </details>
 
