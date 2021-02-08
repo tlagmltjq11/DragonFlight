@@ -907,8 +907,41 @@ public class MonsterManager : SingletonMonoBehaviour<MonsterManager> //싱글턴
 </div>
 </details>
 
+<br>
+
+**Explanation**:mortar_board:<br>
+(구현설명은 주석으로 간단하게 처리했습니다!)<br>
+
+*BuffManager*
+플레이어를 관리하는 Class를 경량화하기 위해 버프들을 관리하는 매니저를 따로 작성했습니다. 
+<버프타입, 남은 지속시간>으로 이루어진 key-value pair를 데이터로 갖는 Dictionary 자료구조를 이용했습니다.
+Dictionary의 연관된 데이터를 짝지어 관리할 수 있는 점을 이용해 버프들의 남은 지속시간을 효율적으로 체크할 수 있었습니다.
+
+*SoundManager*
+싱글턴패턴을 적용한 SoundManager 같은 경우 모든 사운드클립 및 오디오소스를 관리하며 재생 및 중단을 수행하게끔 정리했습니다.
+이를 통해 사운드 재생이 필요한 곳에서 쉽게 참조하여 간편하게 사용할 수 있었습니다. 또한, 몬스터나 메테오와 같이 동시에
+같은 사운드클립에 대해 재생을 중복해서 요청하는 경우 소리가 증폭되고 깨지는 현상이 발생했습니다. 이를 방지하기 위해 현재 재생중인
+오디오 클립의 남은 재생 길이를 List로 관리했고, 새로 들어온 재생요청에 대해서 해당 요청 클립의 길이가 List 내에 데이터로써 존재한다면
+재생을 시키지 않는 것으로 해결했습니다.
+(재생이 끝나면 List 내에서 제거)
+
+*MonsterManager*
+싱글턴패턴을 적용한 MonsterManager 같은 경우 모든 몬스터에 대한 관리를 수행하게끔 구성했습니다.
+특히, 몬스터들로 구성된 한 라인을 생성할때 (빨강)폭탄드래곤을 꼭 포함하도록 강제했으며, 각 몬스터들에게 line 값을 저장시켜
+폭탄드래곤 처치 시 같은 line에 존재하는 모든 드래곤을 처치할 수 있도록 했습니다. 또한 기본적인 몬스터 프리팹에
+타입별로 스프라이트 이미지만 변경시켜 모든 몬스터들을 표현할 수 있도록 했습니다.
+
 </div>
 </details>
+
+<details>
+<summary>Menu 관련 Code 접기/펼치기</summary>
+<div markdown="1">
+  
+</div>
+</details>
+
+<br>
 
 ### Difficult Point.:sweat_smile:
 <br>
