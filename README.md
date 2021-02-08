@@ -366,72 +366,11 @@ PopupOK 생략..
 
 *PopupManager*<br>
 
-*LoadSceneManager*<br>
-
 ```c#
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEditor;
+//LoadSceneManager 간략화
 public class LoadSceneManager : DonDestroy<LoadSceneManager>
 {
-    #region Field
-    public enum eSceneState
-    {
-        None = -1,
-        CI,
-        Title,
-        Lobby,
-        Game
-
-    }
-
-    eSceneState m_state = eSceneState.CI;
-    eSceneState m_loadState = eSceneState.None;
-    string m_progressLabel;
-    AsyncOperation m_loadSceneState;
-    SpriteRenderer m_loadingBgSpr;
-    #endregion
-
-    #region Public Methods
-    public void SetState(eSceneState state)
-    {
-        m_state = state;
-    }
-
-    public eSceneState GetState()
-    {
-        return m_state;
-    }
-
-    public void LoadSceneAsync(eSceneState state)
-    {
-        //load를 하고 있다면
-        if (m_loadState != eSceneState.None)
-        {
-            return;
-        }
-
-        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.NextScene);
-
-        m_loadState = state;
-        ///m_loadingBgSpr.enabled = true;
-        m_loadSceneState = SceneManager.LoadSceneAsync(state.ToString());
-    }
-    #endregion
-
     #region Unity Methods
-    protected override void OnAwake()
-    {
-
-    }
-
-    protected override void OnStart()
-    {
-
-    }
-
     void Update()
     {
         if(m_loadSceneState != null && m_loadState != eSceneState.None)
@@ -439,12 +378,9 @@ public class LoadSceneManager : DonDestroy<LoadSceneManager>
             if(m_loadSceneState.isDone)
             {
                 m_loadSceneState = null;
-
                 m_state = m_loadState;
                 m_loadState = eSceneState.None;
                 m_progressLabel = "100";
-
-
             }
             else
             {
