@@ -492,6 +492,266 @@ public class LoadSceneManager : DonDestroy<LoadSceneManager>
 <summary>Menu 관련 Code 접기/펼치기</summary>
 <div markdown="1">
   
+<details>
+<summary>&nbsp;&nbsp;&nbsp;&nbsp;ILobbyMenu 접기/펼치기</summary>
+<div markdown="1">
+ 
+```c#
+using UnityEngine;
+
+public enum eLobbyMenuType
+{
+    Character,
+    Inventory,
+    Shop
+}
+
+public interface ILobbyMenu
+{
+    //인터페이스는 필드 선언이 안되므로 프로퍼티를 사용해야함.
+    eLobbyMenuType m_type { get; }
+    GameObject gObj { get; }
+    void SetUI();
+    void CloseUI();
+}
+```
+  
+</div>
+</details>
+
+<details>
+<summary>&nbsp;&nbsp;&nbsp;&nbsp;LobbyMenu_Character 접기/펼치기</summary>
+<div markdown="1">
+
+//인벤토리와 상점 스크립트는 이와 유사하므로 생략.. 
+
+```c#
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class LobbyMenu_Character : MonoBehaviour, ILobbyMenu
+{
+    #region Field
+    [SerializeField]
+    UI2DSprite m_characterSpr;
+    [SerializeField]
+    Vector3[] m_charSprPos;
+    [SerializeField]
+    UISprite m_darkAreaSpr;
+    [SerializeField]
+    UIButton[] m_buttons;
+
+    [SerializeField]
+    LobbyController m_lobby;
+
+    [SerializeField]
+    TweenPosition m_charSprTween;
+
+    [SerializeField]
+    string[] m_classNameList;
+    [SerializeField]
+    string[] m_charNameList;
+    [SerializeField]
+    UILabel m_className;
+    [SerializeField]
+    UILabel m_charName;
+
+    [SerializeField]
+    UISprite m_charIconSpr;
+    [SerializeField]
+    UILabel m_gemOwned;
+
+    int m_selectIndex = 0;
+    #endregion
+
+    #region Unity Methods
+    private void OnDisable()
+    {
+        m_darkAreaSpr.depth = 0;
+    }
+
+    private void Awake()
+    {
+        LoadCharacterSprite(PlayerDataManager.Instance.GetCurHero() - 1);
+    }
+    #endregion
+
+    #region Public Methods
+    public eLobbyMenuType m_type { get { return eLobbyMenuType.Character; } }
+
+    public GameObject gObj { get { return gameObject; } }
+
+    public void SetUI()
+    {
+        gameObject.SetActive(true);
+        LoadCharacterSprite(m_selectIndex);
+    }
+
+    public void CloseUI()
+    {
+        gameObject.SetActive(false);
+    }
+
+    public Vector3 GetCharSprPosition(int index)
+    {
+        return m_charSprPos[index];
+    }
+
+    public Sprite GetCharSprite()
+    {
+        return m_characterSpr.sprite2D;
+    }
+
+    public void OnSelect()
+    {
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+        PlayerDataManager.Instance.SetCurHero(m_selectIndex);
+        PlayerDataManager.Instance.SaveData();
+        m_lobby.gameObject.SetActive(true);
+        gameObject.SetActive(false);
+    }
+
+    public void OnBuyCharacter()
+    {
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+        PopupManager.Instance.OpenPopupOkCancel("Notice", string.Format("[00FF00]35레벨로 성장[-]되어 있는 [00FF00]{0}[-]를 수정 40개로\r\n구입하시겠습니까?", m_charName.text), ()=> 
+        {
+            SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+
+            if (PlayerDataManager.Instance.DecreaseGem(40))
+            {
+                PopupManager.Instance.ClosePopup();
+                PlayerDataManager.Instance.BuyCharacter(m_selectIndex);
+
+                m_gemOwned.text = "보유     : [00FF00]" + PlayerDataManager.Instance.GetGem() + "[-]";
+
+                RefreshInfo(m_selectIndex);
+            }
+            else
+            {
+                PopupManager.Instance.OpenPopupOk("Notice", "소지한 수정이 부족합니다.", () => { SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); });
+            }
+        }, () => { SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); });
+    }
+
+    public void OnPressBack()
+    {
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+        LoadCharacterSprite(PlayerDataManager.Instance.GetCurHero() - 1);
+        m_lobby.gameObject.SetActive(true);
+        CloseUI();
+    }
+
+    public void OnPressLeft()
+    {
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+        m_selectIndex--;
+
+
+        if(m_selectIndex < 0)
+        {
+            m_selectIndex = 12;
+        }
+
+        LoadCharacterSprite(m_selectIndex);
+    }
+
+    public void OnPressRight()
+    {
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+        m_selectIndex++;
+
+        if(m_selectIndex > 12)
+        {
+            m_selectIndex = 0;
+        }
+
+        LoadCharacterSprite(m_selectIndex);
+    }
+    #endregion
+
+    #region Private Methods
+    void LoadCharacterSprite(int index)
+    {
+        var spr = Resources.Load<Sprite>(string.Format("Character/character_{0:00}", index + 1));
+        m_characterSpr.sprite2D = spr;
+
+        //이미지 크기를 원래 크기로 맞춰주는것. 즉 snap
+        m_characterSpr.MakePixelPerfect();
+        m_characterSpr.transform.localPosition = m_charSprPos[index];
+
+        m_className.text = m_classNameList[index];
+        m_charName.text = m_charNameList[index];
+        m_charIconSpr.spriteName = string.Format("select_character_{0:00}", index + 1);
+
+        m_charSprTween.from = m_characterSpr.transform.localPosition;
+        m_charSprTween.to = m_charSprTween.from + Vector3.down * 20;
+        m_charSprTween.ResetToBeginning();
+        m_charSprTween.PlayForward();
+
+        m_gemOwned.text = "보유     : [00FF00]" + PlayerDataManager.Instance.GetGem() + "[-]";
+
+        RefreshInfo(index);
+    }
+
+    void RefreshInfo(int index)
+    {
+        if (PlayerDataManager.Instance.IsOwnedCharacter(index))
+        {
+            m_darkAreaSpr.depth = 0;
+            m_buttons[0].gameObject.SetActive(true);
+            m_buttons[1].gameObject.SetActive(false);
+        }
+        else
+        {
+            m_darkAreaSpr.depth = 2;
+            m_buttons[0].gameObject.SetActive(false);
+            m_buttons[1].gameObject.SetActive(true);
+        }
+    }
+    #endregion
+}
+```
+  
+</div>
+</details>
+
+<details>
+<summary>&nbsp;&nbsp;&nbsp;&nbsp;Util 접기/펼치기</summary>
+<div markdown="1">
+  
+```c#
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Util : MonoBehaviour
+{
+    #region Public Methods
+    public static EventDelegate.Parameter MakeParameter(UnityEngine.Object _value, System.Type _type)
+    {
+        EventDelegate.Parameter param = new EventDelegate.Parameter();
+        // 이벤트 parameter 생성.     
+        param.obj = _value;
+        // 이벤트 함수에 전달하고 싶은 값.     
+        param.expectedType = _type;
+        // 값의 타입.       
+        return param;
+    }
+    #endregion
+    
+    //
+}
+```
+  
+</div>
+</details>
+
+**Explanation**:mortar_board:<br>
+(구현설명은 주석으로 간단하게 처리했습니다!)<br>
+
 </div>
 </details>
 
@@ -936,9 +1196,9 @@ Dictionary의 연관된 데이터를 짝지어 관리할 수 있는 점을 이�
 
 *MonsterManager*<br>
 싱글턴패턴을 적용한 MonsterManager 같은 경우 모든 몬스터에 대한 관리를 수행하게끔 구성했습니다.
-특히, 몬스터들로 구성된 한 라인을 생성할때 (빨강)폭탄드래곤을 꼭 포함하도록 강제했으며, 각 몬스터들에게 line 값을 저장시켜
+특히, 몬스터들로 구성된 한 라인을 생성할 때 (빨강)폭탄드래곤을 꼭 포함하도록 강제했으며, 각 몬스터에게 line 값을 저장 시켜
 폭탄드래곤 처치 시 같은 line에 존재하는 모든 드래곤을 처치할 수 있도록 했습니다. 또한 기본적인 몬스터 프리팹에
-타입별로 스프라이트 이미지만 변경시켜 모든 몬스터들을 표현할 수 있도록 했습니다.
+타입별로 스프라이트 이미지만 변경 시켜 모든 몬스터들을 표현할 수 있도록 했습니다.
 
 </div>
 </details>
