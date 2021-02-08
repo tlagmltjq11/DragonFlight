@@ -489,6 +489,15 @@ public class LoadSceneManager : DonDestroy<LoadSceneManager>
 <br>
 
 <details>
+<summary>Menu 관련 Code 접기/펼치기</summary>
+<div markdown="1">
+  
+</div>
+</details>
+
+<br>
+
+<details>
 <summary>Managers Code 접기/펼치기</summary>
 <div markdown="1">
 
@@ -931,13 +940,6 @@ Dictionary의 연관된 데이터를 짝지어 관리할 수 있는 점을 이�
 폭탄드래곤 처치 시 같은 line에 존재하는 모든 드래곤을 처치할 수 있도록 했습니다. 또한 기본적인 몬스터 프리팹에
 타입별로 스프라이트 이미지만 변경시켜 모든 몬스터들을 표현할 수 있도록 했습니다.
 
-</div>
-</details>
-
-<details>
-<summary>Menu 관련 Code 접기/펼치기</summary>
-<div markdown="1">
-  
 </div>
 </details>
 
