@@ -405,9 +405,6 @@ public class PopupOption : MonoBehaviour
 </details>
 
 <br>
-
-PopupOK 생략..
-
 <br>
 
 **Explanation**:mortar_board:<br>
