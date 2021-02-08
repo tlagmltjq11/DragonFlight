@@ -857,7 +857,7 @@ public class LobbyController : MonoBehaviour
 
         gameObject.SetActive(false); //메인로비 비활성화
         var index = int.Parse(button.name.Substring(0, 2)); //각 메뉴버튼은 넘버링이 되어있으므로 해당 넘버링을 인덱스로 사용
-        m_menu[index - 1].SetUI(); //해당 메뉴 활성화
+        m_menu[index - 1].SetUI(); //해당 메뉴 활성화 ->> 다형성 사용!!!!
     }
     #endregion
 
@@ -899,6 +899,21 @@ public class LobbyController : MonoBehaviour
 
 **Explanation**:mortar_board:<br>
 (구현설명은 주석으로 간단하게 처리했습니다!)<br>
+우선 각 메뉴들은 열기, 닫기 등의 동일한 기능이 존재하므로 인터페이스로 추려낸 후 상속받게 함으로써 코드를 규격화했으며, 다형성까지 사용할 수 있도록 구성했습니다.
+이를 이용하기 위해 메뉴 버튼들의 오브젝트명을 메뉴의 순서대로 넘버링하고, 다형성을 사용해 메뉴를 활성화해주는 하나의 동일한 메소드를 모든 메뉴버튼의
+OnClick 이벤트 메소드로 지정해 주었습니다. 이때 버튼 자기 자신을 파라미터로써 이벤트 메소드에 넘겨주어 넘버링을 SubString하고 해당 넘버값으로 메뉴를 활성화해줍니다.
+
+```c#
+    public void OpenMenu(UIButton button)
+    {
+        gameObject.SetActive(false); //메인로비 비활성화
+        var index = int.Parse(button.name.Substring(0, 2)); //각 메뉴버튼은 넘버링이 되어있으므로 해당 넘버링을 인덱스로 사용
+        m_menu[index - 1].SetUI(); //해당 메뉴 활성화 ->> 다형성 사용
+    }
+```
+
+버튼의 OnClick 메소드와 파라미터를 지정해주는 과정 또한 인스펙터상에서 전부 해결이 가능하지만, 버튼의 이벤트를 소스 코드로 동적 할당 해보고자 모든 과정을 코드로 진행했습니다.
+(프리팹 같은 경우, 이벤트가 해제되기 때문에 이를 적용해보는 연습을 하기 위함. EventDelegate.Parameter를 생성하는 과정은 블로그를 참조했음.)
 
 </div>
 </details>
