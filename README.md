@@ -510,6 +510,7 @@ public enum eLobbyMenuType //메뉴 타입
 
 public interface ILobbyMenu //메뉴들이 상속받을 인터페이스
 {
+    //인터페이스로 메뉴들을 불러오면 메뉴고유의 메소드를 호출 할 수 없으므로 인터페이스에 프로퍼티 추가
     eLobbyMenuType m_type { get; } //타입
     GameObject gObj { get; } //게임오브젝트 반환
     void SetUI(); //메뉴활성화
@@ -525,7 +526,7 @@ public interface ILobbyMenu //메뉴들이 상속받을 인터페이스
 <div markdown="1">
   
 <br>
-//인벤토리와 상점 스크립트는 이와 유사하므로 생략.. 
+인벤토리와 상점 스크립트는 이와 유사하므로 생략합니다. 
 
 ```c#
 using System.Collections;
@@ -746,17 +747,148 @@ using UnityEngine;
 public class Util : MonoBehaviour
 {
     #region Public Methods
+    //파라메터 생성 메소드
     public static EventDelegate.Parameter MakeParameter(UnityEngine.Object _value, System.Type _type)
     {
         EventDelegate.Parameter param = new EventDelegate.Parameter(); // 이벤트 parameter 생성.  
         param.obj = _value; // 이벤트 함수에 전달하고 싶은 값.     
         param.expectedType = _type; // 값의 타입.
         
-        return param;
+        return param; //반환
     }
     #endregion
     
-    //이하 생략
+    ...
+    
+}
+```
+  
+</div>
+</details>
+
+<details>
+<summary>&nbsp;&nbsp;&nbsp;&nbsp;LobbyController 접기/펼치기</summary>
+<div markdown="1">
+  
+```c#
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class LobbyController : MonoBehaviour
+{
+    #region Field
+    [SerializeField]
+    GameObject m_menuBtnObj; //메뉴 버튼 최상위 오브젝트
+    [SerializeField]
+    GameObject m_menuObj; //메뉴 최상위 오브젝트
+    [SerializeField]
+    UI2DSprite m_charSpr; //캐릭터 이미지
+    [SerializeField]
+    UISprite m_charIconSpr; //캐릭터 아이콘
+
+    ILobbyMenu[] m_menu; //메뉴 배열
+    UIButton[] m_menuBtns; //메뉴 버튼 배열
+    TweenPosition m_charTween; //트윈 포지션
+    #endregion
+
+    #region Unity Methods
+    void Awake()
+    {
+        m_charTween = m_charSpr.GetComponent<TweenPosition>();
+        m_menuBtns = m_menuBtnObj.GetComponentsInChildren<UIButton>();
+        var results = m_menuObj.GetComponentsInChildren<ILobbyMenu>();
+
+        m_menu = new ILobbyMenu[results.Length]; //메뉴의 갯수만큼 배열 초기화
+
+        for (int i = 0; i < m_menu.Length; i++)
+        {
+            m_menu[i] = results[i]; //메뉴 인터페이스 배열에 각 메뉴를 삽입 
+            m_menu[i].CloseUI(); //메뉴를 닫아준다.
+        }
+
+        //메뉴버튼들 동적으로 이벤트 지정
+        for (int i = 0; i < m_menuBtns.Length; i++)
+        {
+            EventDelegate del = new EventDelegate(this, "OpenMenu"); //현재 스크립트에 존재하는 "OpenMenu" 함수를 콜백함수로 지정
+            del.parameters[0] = Util.MakeParameter(m_menuBtns[i], typeof(UIButton)); //버튼 자기자신을 파라메터로 넘겨줄 수 있도록 지정
+            m_menuBtns[i].onClick.Add(del); //버튼에 이벤트 할당
+        }
+    }
+
+    private void OnEnable()
+    {
+        GetCurCharInfo(); //현재 선택된 캐릭터로 변경
+    }
+    #endregion
+
+    #region Public Methods
+    public void OnBackClick() //뒤로가기 클릭 시
+    {
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); //버튼음 재생
+
+        //타이틀로 돌아갈지 선택하기 위한 팝업 생성
+        PopupManager.Instance.OpenPopupOkCancel("[0000FF]Notice[-]", "타이틀 화면으로 돌아가시겠습니까?", () => {
+            SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+            LoadSceneManager.Instance.LoadSceneAsync(LoadSceneManager.eSceneState.Title); //타이틀 씬으로 비동기로딩 요청
+            PopupManager.Instance.ClosePopup(); //팝업 닫기
+        }, () => { SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); }, "예", "아니오");
+    }
+
+    //게임시작 버튼 클릭 시
+    public void StartGame()
+    {
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+        LoadSceneManager.Instance.LoadSceneAsync(LoadSceneManager.eSceneState.Game); //게임 씬으로 비동기로딩 요청
+    }
+
+    //옵션 버튼 클릭 시
+    public void OpenOption()
+    {
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+        //옵션 팝업 생성
+        PopupManager.Instance.OpenPopupOption(() => { SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); }); 
+    }
+
+    //각 메뉴버튼 클릭 시 실행될 메소드
+    public void OpenMenu(UIButton button)
+    {
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+
+        gameObject.SetActive(false); //메인로비 비활성화
+        var index = int.Parse(button.name.Substring(0, 2)); //각 메뉴버튼은 넘버링이 되어있으므로 해당 넘버링을 인덱스로 사용
+        m_menu[index - 1].SetUI(); //해당 메뉴 활성화
+    }
+    #endregion
+
+    #region Private Methods
+    void GetCurCharInfo()
+    {
+        if (m_menu[(int)eLobbyMenuType.Character].m_type == eLobbyMenuType.Character)
+        {
+            //캐릭터 메뉴 스크립트를 가져옴.
+            LobbyMenu_Character menu = m_menu[(int)eLobbyMenuType.Character].gObj.GetComponent<LobbyMenu_Character>();
+            //캐릭터 이미지를 받아온다.
+            var spr = menu.GetCharSprite();
+            //캐릭터별 위치좌표를 받아온다.
+            var pos = menu.GetCharSprPosition(PlayerDataManager.Instance.GetCurHero() - 1);
+
+            //로비의 캐릭터 이미지를 현재 선택된 것으로 변경
+            m_charSpr.sprite2D = spr;
+            m_charSpr.MakePixelPerfect();
+            m_charSpr.transform.localPosition = pos + Vector3.up * 80f;
+
+            //캐릭터 아이콘도 변경
+            m_charIconSpr.spriteName = string.Format("select_character_{0:00}", PlayerDataManager.Instance.GetCurHero());
+
+            //각 캐릭터의 이미지마다 Tween 포지션이 다르므로 각자의 포지션으로 변경 후 시작시켜줌.
+            m_charTween.from = m_charSpr.transform.localPosition;
+            m_charTween.to = m_charTween.from + Vector3.down * 20f;
+            m_charTween.ResetToBeginning();
+            m_charTween.PlayForward();
+        }
+    }
+    #endregion
 }
 ```
   
