@@ -501,20 +501,19 @@ public class LoadSceneManager : DonDestroy<LoadSceneManager>
 ```c#
 using UnityEngine;
 
-public enum eLobbyMenuType
+public enum eLobbyMenuType //메뉴 타입
 {
-    Character,
-    Inventory,
-    Shop
+    Character, //캐릭터변경
+    Inventory, //인벤토리
+    Shop //상점
 }
 
-public interface ILobbyMenu
+public interface ILobbyMenu //메뉴들이 상속받을 인터페이스
 {
-    //인터페이스는 필드 선언이 안되므로 프로퍼티를 사용해야함.
-    eLobbyMenuType m_type { get; }
-    GameObject gObj { get; }
-    void SetUI();
-    void CloseUI();
+    eLobbyMenuType m_type { get; } //타입
+    GameObject gObj { get; } //게임오브젝트 반환
+    void SetUI(); //메뉴활성화
+    void CloseUI(); //메뉴비활성화
 }
 ```
   
@@ -537,174 +536,188 @@ public class LobbyMenu_Character : MonoBehaviour, ILobbyMenu
 {
     #region Field
     [SerializeField]
-    UI2DSprite m_characterSpr;
+    UI2DSprite m_characterSpr; //캐릭터 이미지
     [SerializeField]
-    Vector3[] m_charSprPos;
+    Vector3[] m_charSprPos; //캐릭터별 이미지 위치
     [SerializeField]
-    UISprite m_darkAreaSpr;
+    UISprite m_darkAreaSpr; //alpha
     [SerializeField]
     UIButton[] m_buttons;
 
     [SerializeField]
-    LobbyController m_lobby;
+    LobbyController m_lobby; //로비컨트롤러
 
     [SerializeField]
-    TweenPosition m_charSprTween;
+    TweenPosition m_charSprTween; //트윈 포지션
 
     [SerializeField]
-    string[] m_classNameList;
+    string[] m_classNameList; //클래스명 리스트
     [SerializeField]
-    string[] m_charNameList;
+    string[] m_charNameList; //캐릭터명 리스트
     [SerializeField]
-    UILabel m_className;
+    UILabel m_className; //클래스명
     [SerializeField]
-    UILabel m_charName;
+    UILabel m_charName; //캐릭터명
 
     [SerializeField]
-    UISprite m_charIconSpr;
+    UISprite m_charIconSpr; //캐릭터 아이콘 이미지
     [SerializeField]
-    UILabel m_gemOwned;
-
-    int m_selectIndex = 0;
+    UILabel m_gemOwned; //보유한 보석 라벨
+    
+    int m_selectIndex = 0; //현재 화면에 띄워진 캐릭터 인덱스
     #endregion
 
     #region Unity Methods
-    private void OnDisable()
-    {
-        m_darkAreaSpr.depth = 0;
-    }
-
     private void Awake()
     {
+        //PlayerPrefs에 저장된 현재선택된 캐릭터의 인덱스값을 받아와 초기화
         LoadCharacterSprite(PlayerDataManager.Instance.GetCurHero() - 1);
     }
     #endregion
 
     #region Public Methods
-    public eLobbyMenuType m_type { get { return eLobbyMenuType.Character; } }
+    public eLobbyMenuType m_type { get { return eLobbyMenuType.Character; } } //메뉴타입 반환
 
-    public GameObject gObj { get { return gameObject; } }
+    public GameObject gObj { get { return gameObject; } } //게임오브젝트 반환
 
+    //메뉴 활성화
     public void SetUI()
     {
-        gameObject.SetActive(true);
-        LoadCharacterSprite(m_selectIndex);
+        gameObject.SetActive(true); //오브젝트 활성화
+        LoadCharacterSprite(m_selectIndex); //selectIndex값대로 캐릭터를 화면에 띄워준다.
     }
 
+    //메뉴 비활성화
     public void CloseUI()
     {
-        gameObject.SetActive(false);
+        m_darkAreaSpr.depth = 0; //Alpha Screen 뎁스 초기화
+        gameObject.SetActive(false); //오브젝트 비활성화
     }
 
+    //캐릭터별로 정해진 위치좌표 반환
     public Vector3 GetCharSprPosition(int index)
     {
-        return m_charSprPos[index];
+        return m_charSprPos[index]; //인덱스에 맞는 캐릭터의 위치좌표 반환
     }
 
+    //캐릭터별 이미지 반환
     public Sprite GetCharSprite()
     {
-        return m_characterSpr.sprite2D;
+        return m_characterSpr.sprite2D; //현재 선택되어있는 캐릭터의 이미지를 반환
     }
 
+    //캐릭터 선택 버튼 클릭 시 호출되는 메소드
     public void OnSelect()
     {
-        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
-        PlayerDataManager.Instance.SetCurHero(m_selectIndex);
-        PlayerDataManager.Instance.SaveData();
-        m_lobby.gameObject.SetActive(true);
-        gameObject.SetActive(false);
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); //버튼클릭음 재생
+        PlayerDataManager.Instance.SetCurHero(m_selectIndex); //PlayerPrefs에 현재 선택된 캐릭터의 인덱스값 저장
+        PlayerDataManager.Instance.SaveData(); //save
+        m_lobby.gameObject.SetActive(true); //메인로비 오브젝트 활성화
+        gameObject.SetActive(false); //캐릭터메뉴 비활성화
     }
 
+    //캐릭터 구매 버튼 클릭 시 호출되는 메소드
     public void OnBuyCharacter()
     {
-        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); //버튼클릭음 재생
+        
+        //구매 선택을 위한 팝업 생성
         PopupManager.Instance.OpenPopupOkCancel("Notice", string.Format("[00FF00]35레벨로 성장[-]되어 있는 [00FF00]{0}[-]를 수정 40개로\r\n구입하시겠습니까?", m_charName.text), ()=> 
         {
             SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
 
-            if (PlayerDataManager.Instance.DecreaseGem(40))
+            if (PlayerDataManager.Instance.DecreaseGem(40)) //보유한 보석에서 40을 차감
             {
-                PopupManager.Instance.ClosePopup();
-                PlayerDataManager.Instance.BuyCharacter(m_selectIndex);
+                PopupManager.Instance.ClosePopup(); //팝업 닫기
+                PlayerDataManager.Instance.BuyCharacter(m_selectIndex); //구매한 캐릭터를 보유캐릭터 리스트에 저장
 
-                m_gemOwned.text = "보유     : [00FF00]" + PlayerDataManager.Instance.GetGem() + "[-]";
+                m_gemOwned.text = "보유     : [00FF00]" + PlayerDataManager.Instance.GetGem() + "[-]"; //보유한 보석 표시
 
-                RefreshInfo(m_selectIndex);
+                RefreshInfo(m_selectIndex); //구매했으므로 Alpha Screen을 제거해주고 선택가능하게 만들어준다.
             }
-            else
+            else //보유한 보석이 부족한 경우
             {
+                //보석이 부족하다는 내용 확인용 팝업 생성
                 PopupManager.Instance.OpenPopupOk("Notice", "소지한 수정이 부족합니다.", () => { SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); });
             }
         }, () => { SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); });
     }
 
+    //뒤로가기 버튼 클릭 시
     public void OnPressBack()
     {
-        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
-        LoadCharacterSprite(PlayerDataManager.Instance.GetCurHero() - 1);
-        m_lobby.gameObject.SetActive(true);
-        CloseUI();
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); //버튼클릭음 재생
+        LoadCharacterSprite(PlayerDataManager.Instance.GetCurHero() - 1); //현재 선택된 캐릭터로 이미지 변경
+        m_lobby.gameObject.SetActive(true); //메인로비 오브젝트 활성화
+        CloseUI(); //캐릭터메뉴 비활성화
     }
 
+    //캐릭터 목록의 왼쪽으로 넘길 경우
     public void OnPressLeft()
     {
-        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
-        m_selectIndex--;
+        SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick); //버튼음 재생
+        m_selectIndex--; //인덱스 --
 
 
-        if(m_selectIndex < 0)
+        if(m_selectIndex < 0) //-1이 되면 12로 변경시켜 순환유도
         {
             m_selectIndex = 12;
         }
 
-        LoadCharacterSprite(m_selectIndex);
+        LoadCharacterSprite(m_selectIndex); //인덱스에 맞는 캐릭터이미지를 띄워준다.
     }
 
+    //캐릭터 목록의 오른쪽으로 넘길 경우
     public void OnPressRight()
     {
         SoundManager.Instance.PlaySfx(SoundManager.eAudioSFXClip.ButtonClick);
-        m_selectIndex++;
+        m_selectIndex++; //인덱스 ++
 
         if(m_selectIndex > 12)
         {
             m_selectIndex = 0;
         }
 
-        LoadCharacterSprite(m_selectIndex);
+        LoadCharacterSprite(m_selectIndex); //인덱스에 맞는 캐릭터이미지를 띄워준다.
     }
     #endregion
 
     #region Private Methods
+    //인덱스에 맞는 캐릭터이미지로 변경
     void LoadCharacterSprite(int index)
     {
-        var spr = Resources.Load<Sprite>(string.Format("Character/character_{0:00}", index + 1));
-        m_characterSpr.sprite2D = spr;
+        var spr = Resources.Load<Sprite>(string.Format("Character/character_{0:00}", index + 1)); //동적로드로 이미지를 가져온다.
+        m_characterSpr.sprite2D = spr; //해당 캐릭터이미지로 변경
 
         //이미지 크기를 원래 크기로 맞춰주는것. 즉 snap
         m_characterSpr.MakePixelPerfect();
-        m_characterSpr.transform.localPosition = m_charSprPos[index];
+        m_characterSpr.transform.localPosition = m_charSprPos[index]; //캐릭터별 위치좌표로 초기화
 
+        //이름 및 아이콘 초기화
         m_className.text = m_classNameList[index];
         m_charName.text = m_charNameList[index];
         m_charIconSpr.spriteName = string.Format("select_character_{0:00}", index + 1);
 
+        //트윈 포지션 셋팅 후 재생
         m_charSprTween.from = m_characterSpr.transform.localPosition;
         m_charSprTween.to = m_charSprTween.from + Vector3.down * 20;
         m_charSprTween.ResetToBeginning();
         m_charSprTween.PlayForward();
 
+        //보유중인 보석 초기화
         m_gemOwned.text = "보유     : [00FF00]" + PlayerDataManager.Instance.GetGem() + "[-]";
-
+        
         RefreshInfo(index);
     }
 
+    //인덱스에 맞는 캐릭터의 소유 여부에 따라서, Alpha Screen과 선택, 구매버튼의 유무를 결정해준다.
     void RefreshInfo(int index)
     {
-        if (PlayerDataManager.Instance.IsOwnedCharacter(index))
+        if (PlayerDataManager.Instance.IsOwnedCharacter(index)) //보유한 캐릭터일 경우
         {
-            m_darkAreaSpr.depth = 0;
-            m_buttons[0].gameObject.SetActive(true);
-            m_buttons[1].gameObject.SetActive(false);
+            m_darkAreaSpr.depth = 0; //알파스크린을 맨앞으로 빼서 어둡게 가리지 않도록 설정
+            m_buttons[0].gameObject.SetActive(true); //선택버튼 활성화
+            m_buttons[1].gameObject.SetActive(false); //구매버튼 비활성화
         }
         else
         {
@@ -735,12 +748,10 @@ public class Util : MonoBehaviour
     #region Public Methods
     public static EventDelegate.Parameter MakeParameter(UnityEngine.Object _value, System.Type _type)
     {
-        EventDelegate.Parameter param = new EventDelegate.Parameter();
-        // 이벤트 parameter 생성.     
-        param.obj = _value;
-        // 이벤트 함수에 전달하고 싶은 값.     
-        param.expectedType = _type;
-        // 값의 타입.       
+        EventDelegate.Parameter param = new EventDelegate.Parameter(); // 이벤트 parameter 생성.  
+        param.obj = _value; // 이벤트 함수에 전달하고 싶은 값.     
+        param.expectedType = _type; // 값의 타입.
+        
         return param;
     }
     #endregion
