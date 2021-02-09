@@ -1366,11 +1366,24 @@ Dictionary의 연관된 데이터를 짝지어 관리할 수 있는 점을 이�
 </div>
 </details>
 
+<details>
+<summary>Optimization 접기/펼치기</summary>
+<div markdown="1">
+
+<br>
+
+**Explanation**:scissors:<br>
+* Object Pooling 기법을 사용하여, 반복되는 생성-삭제 작업으로인한 GC의 잦은 호출을 방지했습니다.
+* Atlas를 사용하여 드로우콜을 낮추고자 했습니다.
+
+<br>
+
+</div>
+</details>
+
 <br>
 
 ### Difficult Point.:sweat_smile:
-<br>
-* 구현당시 매개변수로 int형을 넘겨주는 방식을 알지 못해서, 위와 같이 오브젝트명의 넘버링을 통해 구현했는데
-https://berabue.blogspot.com/2014/05/unity-ngui.html 해당 링크에서 EventDelegate의 매개변수를 int형으로도 넘겨줄 수 있는 방식을 배울 수 있었다. 
+* 무엇보다 NGUI에 대해서 새로 배워야했던 점이 어려웠던 것 같습니다. 그로인해 고비를 겪었던 적이 꽤 있었는데 구현당시 매개변수로 int형을 넘겨주는 방식을 알지 못해서, 위와 같이 오브젝트명의 넘버링을 통해 구현했는데 https://berabue.blogspot.com/2014/05/unity-ngui.html  해당 링크에서 EventDelegate의 매개변수를 int형으로도 넘겨줄 수 있는 방식을 배울 수 있었습니다. 
 ->> 프로젝트에서 사용한 NGUI가 3.6.2 버전이었는데 버전의 차이인지 http://blog.naver.com/PostView.nhn?blogId=star_breeze&logNo=221009506490 해당 링크에서 설명한
 방식은 적용할 수 없었다.
