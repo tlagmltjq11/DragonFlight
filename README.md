@@ -915,11 +915,6 @@ OnClick 이벤트 메소드로 지정해 주었습니다. 이때 버튼 자기 �
 버튼의 OnClick 메소드와 파라미터를 지정해주는 과정 또한 인스펙터상에서 전부 해결이 가능하지만, 버튼의 이벤트를 소스 코드로 동적 할당 해보고자 모든 과정을 코드로 진행했습니다.
 (프리팹 같은 경우, 외부에서 연결된 이벤트는 해제되기 때문에 이를 대처하는 연습을 하기 위함.)
 
-★ 구현당시 매개변수로 int형을 넘겨주는 방식을 알지 못해서, 위와 같이 오브젝트명의 넘버링을 통해 구현했는데
-https://berabue.blogspot.com/2014/05/unity-ngui.html 해당 링크에서 EventDelegate의 매개변수를 int형으로도 넘겨줄 수 있는 방식을 배울 수 있었다. 
-->> 프로젝트에서 사용한 NGUI가 3.6.2 버전이었는데 버전의 차이인지 http://blog.naver.com/PostView.nhn?blogId=star_breeze&logNo=221009506490 해당 링크에서 설명한
-방식은 적용할 수 없었다.
-
 </div>
 </details>
 
@@ -1375,4 +1370,7 @@ Dictionary의 연관된 데이터를 짝지어 관리할 수 있는 점을 이�
 
 ### Difficult Point.:sweat_smile:
 <br>
-<br>
+* 구현당시 매개변수로 int형을 넘겨주는 방식을 알지 못해서, 위와 같이 오브젝트명의 넘버링을 통해 구현했는데
+https://berabue.blogspot.com/2014/05/unity-ngui.html 해당 링크에서 EventDelegate의 매개변수를 int형으로도 넘겨줄 수 있는 방식을 배울 수 있었다. 
+->> 프로젝트에서 사용한 NGUI가 3.6.2 버전이었는데 버전의 차이인지 http://blog.naver.com/PostView.nhn?blogId=star_breeze&logNo=221009506490 해당 링크에서 설명한
+방식은 적용할 수 없었다.
