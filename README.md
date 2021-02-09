@@ -1366,6 +1366,8 @@ Dictionary의 연관된 데이터를 짝지어 관리할 수 있는 점을 이�
 </div>
 </details>
 
+<br>
+
 <details>
 <summary>Optimization 접기/펼치기</summary>
 <div markdown="1">
@@ -1384,6 +1386,12 @@ Dictionary의 연관된 데이터를 짝지어 관리할 수 있는 점을 이�
 <br>
 
 ### Difficult Point.:sweat_smile:
-* 무엇보다 NGUI에 대해서 새로 배워야했던 점이 어려웠던 것 같습니다. 그로인해 고비를 겪었던 적이 꽤 있었는데 구현당시 매개변수로 int형을 넘겨주는 방식을 알지 못해서, 위와 같이 오브젝트명의 넘버링을 통해 구현했는데 https://berabue.blogspot.com/2014/05/unity-ngui.html  해당 링크에서 EventDelegate의 매개변수를 int형으로도 넘겨줄 수 있는 방식을 배울 수 있었습니다. 
-->> 프로젝트에서 사용한 NGUI가 3.6.2 버전이었는데 버전의 차이인지 http://blog.naver.com/PostView.nhn?blogId=star_breeze&logNo=221009506490 해당 링크에서 설명한
-방식은 적용할 수 없었다.
+* 무엇보다 NGUI에 대해서 새로 배워야했던 것이 고비로 다가왔던 적이 많은 것 같습니다. 예를들자면 위 Menu 관련 설명에도 나와있지만 코드상에서 NGUI버튼의 
+Onclick 이벤트 메소드를 동적으로 할당해줄때, EventDelegate를 매개변수로 넘겨주어야 하며, 또한 EventDelegate의 매개변수를 지정해주려면
+EventDelegata.Parameter를 생성해 지정해주어야 했습니다. 이때 매개변수로 넘겨줄 수 있는 형식은 UnityEngine.Object 였기 때문에, int값을 넘겨줄 수 없는
+상황이었습니다. 결국 버튼 오브젝트의 이름앞에 넘버링을하고 버튼을 매개변수로 넘겨준 후, 해당 넘버링을 substring해서 사용하게끔 하여 해결했지만 UGUI를 사용할때와는
+달리 좀 더 복잡해 꽤 많은 시간이 소요되었으며, 비효율적인 방식이라 생각되어 아쉬웠던 기억이 있습니다.
+그렇다고 NGUI가 마냥 불편한것은 아니었습니다. Tween 기능을 제공하는것이 굉장히 마음에 들었고, 개인적으로 Depth관리 방식은 UGUI에 비해 훨씬 편했습니다. 
+->> 추후 https://berabue.blogspot.com/2014/05/unity-ngui.html 해당 링크에서 변수명을 넘겨줌으로써 정수값을 전달할 수 있는 방식을 알게되었습니다.
+->> 또한 개발당시 사용한 NGUI는 3.6.2 버전이었는데 버전의 차이인지, http://blog.naver.com/PostView.nhn?blogId=star_breeze&logNo=221009506490 해당 링크와 같은 방식을 사용할 수 없었습니다.
+
