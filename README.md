@@ -901,10 +901,10 @@ public class LobbyController : MonoBehaviour
 (구현설명은 주석으로 간단하게 처리했습니다!)<br>
 우선 각 메뉴들은 열기, 닫기 등의 동일한 기능이 존재하므로 인터페이스로 추려낸 후 상속받게 함으로써 코드를 규격화했으며, 다형성까지 사용할 수 있도록 구성했습니다.
 이를 이용하기 위해 메뉴 버튼들의 오브젝트명을 메뉴의 순서대로 넘버링하고, 다형성을 사용해 메뉴를 활성화해주는 하나의 동일한 메소드를 모든 메뉴버튼의
-OnClick 이벤트 메소드로 지정해 주었습니다. 이때 버튼 자기 자신을 파라미터로써 이벤트 메소드에 넘겨주어 넘버링을 SubString하고 해당 넘버값으로 메뉴를 활성화해줍니다.
+OnClick 이벤트 메소드로 지정해 주었습니다. 이때 버튼 자기 자신을 파라미터로 이벤트 메소드에 넘겨주어 넘버링을 SubString하고 해당 넘버값으로 메뉴를 활성화해줍니다.
 
 ```c#
-    public void OpenMenu(UIButton button)
+    public void OpenMenu(UIButton button) //파라메터 int로 대체가능
     {
         gameObject.SetActive(false); //메인로비 비활성화
         var index = int.Parse(button.name.Substring(0, 2)); //각 메뉴버튼은 넘버링이 되어있으므로 해당 넘버링을 인덱스로 사용
@@ -913,7 +913,12 @@ OnClick 이벤트 메소드로 지정해 주었습니다. 이때 버튼 자기 �
 ```
 
 버튼의 OnClick 메소드와 파라미터를 지정해주는 과정 또한 인스펙터상에서 전부 해결이 가능하지만, 버튼의 이벤트를 소스 코드로 동적 할당 해보고자 모든 과정을 코드로 진행했습니다.
-(프리팹 같은 경우, 이벤트가 해제되기 때문에 이를 적용해보는 연습을 하기 위함. EventDelegate.Parameter를 생성하는 과정은 블로그를 참조했음.)
+(프리팹 같은 경우, 외부에서 연결된 이벤트는 해제되기 때문에 이를 대처하는 연습을 하기 위함.)
+
+★ 구현당시 매개변수로 int형을 넘겨주는 방식을 알지 못해서, 위와 같이 오브젝트명의 넘버링을 통해 구현했는데
+https://berabue.blogspot.com/2014/05/unity-ngui.html 해당 링크에서 EventDelegate의 매개변수를 int형으로도 넘겨줄 수 있는 방식을 배울 수 있었다. 
+->> 프로젝트에서 사용한 NGUI가 3.6.2 버전이었는데 버전의 차이인지 http://blog.naver.com/PostView.nhn?blogId=star_breeze&logNo=221009506490 해당 링크에서 설명한
+방식은 적용할 수 없었다.
 
 </div>
 </details>
