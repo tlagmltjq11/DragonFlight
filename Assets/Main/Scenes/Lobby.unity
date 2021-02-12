@@ -11296,7 +11296,7 @@ MonoBehaviour:
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 9.533334
+  aspectRatio: 9.866667
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
@@ -14222,13 +14222,7 @@ MonoBehaviour:
   pressedSprite2D: {fileID: 0}
   disabledSprite2D: {fileID: 0}
   pixelSnap: 0
-  onClick:
-  - mTarget: {fileID: 1631992565}
-    mMethodName: OpenMenu
-    mParameters:
-    - obj: {fileID: 1823475315}
-      field: 
-    oneShot: 0
+  onClick: []
 --- !u!65 &1823475316
 BoxCollider:
   m_ObjectHideFlags: 0
