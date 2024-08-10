@@ -2,7 +2,7 @@
 프로젝트 설명은 아래 [링크](#1)를 통해 영상으로 확인할 수 있고, 코드와 같은 부가설명은 [About Dev](#2) 부분을 참고해주세요.<br>
 <br>
 
-### About Project.:two_men_holding_hands:
+### About Project.
 라인게임즈에서 개발한 드래곤플라이트를 모작한 프로젝트입니다.<br>
 Mobile, PC 모두 플레이 가능합니다.<br>
 <br>
@@ -12,7 +12,7 @@ Mobile, PC 모두 플레이 가능합니다.<br>
 <br>
 <br>
 
-### About Dev.:nut_and_bolt: <div id="2"></div>
+### About Dev. <div id="2"></div>
 <br>
 
 <details>
@@ -406,7 +406,7 @@ public class PopupOption : MonoBehaviour
 
 <br>
 
-**Explanation**:mortar_board:<br>
+**Explanation**<br>
 (구현설명은 주석으로 간단하게 처리했습니다!)<br>
 어느 상황에서든지 팝업창을 사용할 수 있게 DonDestoryOnLoad를 적용한 PopupManager를 구성했습니다. 사용 용도에 따라 선택용 팝업(PopupOkCancel), 확인용 팝업(PopupOk), 옵션용 팝업(PopupOption)으로 구분 지었으며, 각 버튼 클릭 시 처리해야 하는 부분들은 Delegate를 이용해서 팝업 생성과 동시에 넘겨주도록 구현했습니다. 그리하여, 동일한 팝업 Prefab으로 여러 상황을 대처할 수 있게 되었습니다.
 
