@@ -7,7 +7,7 @@
 Mobile, PC 모두 플레이 가능합니다.<br>
 <br>
 
-### Video.:video_camera: <div id="1">이미지를 클릭해주세요.</div>
+### Video. <div id="1">이미지를 클릭해주세요.</div>
 [![시연영상](https://img.youtube.com/vi/p3UIaGcnMSU/0.jpg)](https://www.youtube.com/watch?v=p3UIaGcnMSU&feature=youtu.be)
 <br>
 <br>
@@ -1385,7 +1385,7 @@ Dictionary의 연관된 데이터를 짝지어 관리할 수 있는 점을 이�
 
 <br>
 
-### Difficult Point.:sweat_smile:
+### Difficult Point.
 * 무엇보다 NGUI에 대해서 새로 배워야 했던 것이 고비로 다가왔던 적이 많은 것 같습니다. 예를 들자면 위 Menu 관련 설명에도 나와 있지만 코드상에서 NGUI버튼의
 Onclick 이벤트 메소드를 동적으로 할당해줄 때, EventDelegate를 매개변수로 넘겨주어야 하며, 또한 EventDelegate의 매개변수를 지정해주려면
 EventDelegata.Parameter를 생성해 지정해주어야 했습니다. 이때 매개변수로 넘겨줄 수 있는 형식은 UnityEngine.Object 였기 때문에, int 값을 넘겨줄 수 없는
